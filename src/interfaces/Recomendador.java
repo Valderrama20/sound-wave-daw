@@ -1,8 +1,8 @@
 package interfaces;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface Recomendador {
-    List<Contenido> recomendar(Usuario usuario);
-    List<Contenido> obtenerSimilares(Contenido contenido);
+    ArrayList<Contenido> recomendar(Usuario usuario);
+    ArrayList<Contenido> obtenerSimilares(Contenido contenido);
 }
