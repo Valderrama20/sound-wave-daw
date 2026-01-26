@@ -1,0 +1,16 @@
+package enums;
+
+public enum CategoriaPodcast {
+    TECNOLOGIA,
+    DEPORTES,
+    COMEDIA,
+    TRUE_CRIME,
+    EDUCACION,
+    NEGOCIOS,
+    SALUD,
+    ENTRETENIMIENTO,
+    HISTORIA,
+    CIENCIA,
+    POLITICA,
+    CULTURA
+}
