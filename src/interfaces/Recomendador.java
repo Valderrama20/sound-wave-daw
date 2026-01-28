@@ -1,5 +1,8 @@
 package interfaces;
 
+import contenido.Contenido;
+import usuarios.Usuario;
+
 import java.util.ArrayList;
 
 public interface Recomendador {
