@@ -1,10 +1,11 @@
 package usuarios;
 
+import contenido.Contenido;
 import enums.TipoSuscripcion;
 
 import java.util.Date;
 
-public class UsuarioGratuito extends Usuario{
+public class UsuarioGratuito extends Usuario {
 
     // Atributos
     private int anunciosEscuchados;
@@ -57,18 +58,32 @@ public class UsuarioGratuito extends Usuario{
     // Metodos
     @Override
     public void reproducir(Contenido contenido) {
-        // TODO
+        if(!puedeReproducir()){
+            // TODO Excepcion
+            System.out.println("Ya no puedes reproducir por hoy. Pasate a premium :)");
+            return;
+        }
+
+        if (anunciosEscuchados % 3 == 0) {
+            // TODO Excepcion
+            System.out.println("Tienes que ver un anuncio");
+            return;
+        }
+
+        reproduccionesHoy++;
+        contenido.reproducir();
     }
 
-    public void verAnuncio(){
-        // TODO
+    public void verAnuncio() {
+        ultimoAnuncio = new Date();
+        System.out.println("Viendo un anuncio...");
     }
 
-    public boolean puedeReproducir(){
+    public boolean puedeReproducir() {
         return reproduccionesHoy < limiteReproducciones;
     }
 
-    public void reiniciarContadorDiario(){
+    public void reiniciarContadorDiario() {
         reproduccionesHoy = 0;
     }
 

@@ -1,5 +1,6 @@
 package usuarios;
 
+import contenido.Contenido;
 import enums.TipoSuscripcion;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class UsuarioPremium extends Usuario{
     // Metodos
     @Override
     public void reproducir(Contenido contenido) {
-        // TODO
+        contenido.reproducir();
     }
 
     public void descargar(Contenido contenido) {

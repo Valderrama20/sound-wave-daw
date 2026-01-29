@@ -1,5 +1,6 @@
 package usuarios;
 
+import contenido.Contenido;
 import enums.TipoSuscripcion;
 
 import java.util.ArrayList;
