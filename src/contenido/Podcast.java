@@ -33,7 +33,6 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
      * @param duracionSegundos Duración en segundos
      * @param disponible Indica si está disponible
      * @param fechaPublicacion Fecha de publicación
-     * @param usuario Usuario que lo subió
      * @param plataforma Plataforma
      * @param creador Creador del podcast
      * @param numeroEpisodio Número del episodio
@@ -42,8 +41,8 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
      * @param categoria Categoría
      * @param transcripcion Transcripción
      */
-    public Podcast(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Usuario usuario, Plataforma plataforma, Creador creador, int numeroEpisodio, int temporada, String descripcion, CategoriaPodcast categoria, String transcripcion) {
-        super(id, titulo, reproducciones, likes, duracionSegundos, disponible, fechaPublicacion, usuario, plataforma);
+    public Podcast(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Plataforma plataforma, Creador creador, int numeroEpisodio, int temporada, String descripcion, CategoriaPodcast categoria, String transcripcion) {
+        super(id, titulo, reproducciones, likes, duracionSegundos, disponible, fechaPublicacion, plataforma);
         this.creador = creador;
         this.numeroEpisodio = numeroEpisodio;
         this.temporada = temporada;
@@ -56,7 +55,7 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
     /**
      * Constructor para crear un podcast sin creador asignado.
      */
-    public Podcast(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Usuario usuario, Plataforma plataforma, int numeroEpisodio, int temporada, String descripcion, CategoriaPodcast categoria, String transcripcion) {
+    public Podcast(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Plataforma plataforma, int numeroEpisodio, int temporada, String descripcion, CategoriaPodcast categoria, String transcripcion) {
         this(
                 id,
                 titulo,
@@ -65,7 +64,6 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
                 duracionSegundos,
                 disponible,
                 fechaPublicacion,
-                usuario,
                 plataforma,
                 null,
                 numeroEpisodio,

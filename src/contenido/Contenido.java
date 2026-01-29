@@ -16,12 +16,11 @@ public abstract class Contenido {
     private ArrayList<String> tags;
     private boolean disponible;
     private Date fechaPublicacion;
-    private Usuario usuario;
     private ArrayList<Playlist> playlists;
     private Plataforma plataforma;
 
     // Constructor
-    public Contenido(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Usuario usuario, Plataforma plataforma) {
+    public Contenido(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Plataforma plataforma) {
         this.id = id;
         this.titulo = titulo;
         this.reproducciones = reproducciones;
@@ -30,7 +29,6 @@ public abstract class Contenido {
         this.tags = new ArrayList<>();
         this.disponible = disponible;
         this.fechaPublicacion = fechaPublicacion;
-        this.usuario = usuario;
         this.playlists = new ArrayList<>();
         this.plataforma = plataforma;
     }
@@ -94,14 +92,6 @@ public abstract class Contenido {
 
     public void setFechaPublicacion(Date fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 
     public ArrayList<Playlist> getPlaylists() {

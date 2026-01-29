@@ -1,11 +1,12 @@
 package contenido;
 
+import artistas.Album;
 import enums.GeneroMusical;
 import interfaces.Descargable;
 import interfaces.Reproducible;
-import usuarios.Usuario;
-
 import java.util.Date;
+import java.util.UUID;
+import artistas.Artista;
 
 /**
  * Representa una canción dentro de la plataforma.
@@ -25,79 +26,52 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
     /**
      * Constructor principal de la clase Cancion.
      *
-     * @param id Identificador único
      * @param titulo Título de la canción
-     * @param reproducciones Número de reproducciones
-     * @param likes Número de likes
      * @param duracionSegundos Duración en segundos
-     * @param disponible Indica si está disponible
      * @param fechaPublicacion Fecha de publicación
-     * @param usuario Usuario que la subió
      * @param plataforma Plataforma de publicación
-     * @param letra Letra completa
      * @param artista Artista principal
      * @param album Álbum
      * @param genero Género musical
-     * @param audioURL URL del audio
-     * @param explicit Contenido explícito
-     * @param isrc Código ISRC
      */
-    public Cancion(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Usuario usuario, Plataforma plataforma, String letra, Artista artista, Album album, GeneroMusical genero, String audioURL, boolean explicit, String isrc) {
-        super(id, titulo, reproducciones, likes, duracionSegundos, disponible, fechaPublicacion, usuario, plataforma);
-        this.letra = letra;
+    public Cancion(String titulo, int duracionSegundos, Date fechaPublicacion, Plataforma plataforma, Artista artista, Album album, GeneroMusical genero) {
+        super(UUID.randomUUID().toString(), titulo, 0, 0, duracionSegundos, true, fechaPublicacion, plataforma);
+        this.letra = "";
         this.artista = artista;
         this.album = album;
         this.genero = genero;
-        this.audioURL = audioURL;
-        this.explicit = explicit;
-        ISRC = isrc;
+        this.audioURL = "";
+        this.explicit = false;
+        ISRC = "";
     }
 
     /**
      * Constructor para crear una canción sin artista.
      */
-    public Cancion(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Usuario usuario, Plataforma plataforma, String letra, Album album, GeneroMusical genero, String audioURL, boolean explicit, String isrc) {
+    public Cancion(String titulo, int duracionSegundos, Date fechaPublicacion, Plataforma plataforma, Album album, GeneroMusical genero) {
         this(
-                id,
                 titulo,
-                reproducciones,
-                likes,
                 duracionSegundos,
-                disponible,
                 fechaPublicacion,
-                usuario,
                 plataforma,
-                letra,
                 null,
                 album,
-                genero,
-                audioURL,
-                explicit,
-                isrc
+                genero
         );
     }
 
     /**
      * Constructor para crear una canción sin álbum.
      */
-    public Cancion(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Usuario usuario, Plataforma plataforma, String letra, Artista artista, GeneroMusical genero, String audioURL, boolean explicit, String isrc) {
+    public Cancion(String titulo, int duracionSegundos, Date fechaPublicacion, Plataforma plataforma, Artista artista, GeneroMusical genero) {
         this(
-                id,
                 titulo,
-                reproducciones,
-                likes,
                 duracionSegundos,
-                disponible,
                 fechaPublicacion,
-                usuario,
                 plataforma,
-                letra,
                 artista,
                 null,
-                genero,
-                audioURL,
-                explicit,
-                isrc
+                genero
         );
     }
 
