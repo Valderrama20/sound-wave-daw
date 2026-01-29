@@ -1,5 +1,7 @@
 package contenido;
 
+import usuarios.Usuario;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,9 +16,12 @@ public abstract class Contenido {
     private ArrayList<String> tags;
     private boolean disponible;
     private Date fechaPublicacion;
+    private Usuario usuario;
+    private ArrayList<Playlist> playlists;
+    private Plataforma plataforma;
 
     // Constructor
-    public Contenido(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion) {
+    public Contenido(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Usuario usuario, Plataforma plataforma) {
         this.id = id;
         this.titulo = titulo;
         this.reproducciones = reproducciones;
@@ -25,6 +30,9 @@ public abstract class Contenido {
         this.tags = new ArrayList<>();
         this.disponible = disponible;
         this.fechaPublicacion = fechaPublicacion;
+        this.usuario = usuario;
+        this.playlists = new ArrayList<>();
+        this.plataforma = plataforma;
     }
 
     // Getters and Setters
@@ -88,6 +96,30 @@ public abstract class Contenido {
         this.fechaPublicacion = fechaPublicacion;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public ArrayList<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void addPlaylists(Playlist playlist) {
+        this.playlists.add(playlist);
+    }
+
+    public Plataforma getPlataforma() {
+        return plataforma;
+    }
+
+    public void setPlataforma(Plataforma plataforma) {
+        this.plataforma = plataforma;
+    }
+
     // Metodos
     public abstract void reproducir();
 
@@ -100,6 +132,10 @@ public abstract class Contenido {
     };
 
     public boolean esPopular() {
-       return
+        return reproducciones > 100000;
+    };
+
+    public  void  validarDuracion(){
+        // TODO
     };
 }
