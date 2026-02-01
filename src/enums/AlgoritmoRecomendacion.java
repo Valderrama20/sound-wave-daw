@@ -13,8 +13,15 @@ public enum AlgoritmoRecomendacion {
         this.descripcion = descripcion;
     }
 
-    // Getters
+    // Metodos
     public String getDescripcion() {
         return descripcion;
+    }
+
+    @Override
+    public String toString() {
+        return "AlgoritmoRecomendacion{" +
+                "descripcion='" + descripcion + '\'' +
+                '}';
     }
 }

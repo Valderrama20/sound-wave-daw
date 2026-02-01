@@ -20,7 +20,7 @@ public enum TipoSuscripcion {
         this.descargasOffline = descargasOffline;
     }
 
-    // Getters
+    // Metodos
     public double getPrecioMensual() {
         return precioMensual;
     }
@@ -35,5 +35,17 @@ public enum TipoSuscripcion {
 
     public boolean isDescargasOffline() {
         return descargasOffline;
+    }
+
+    public boolean tieneReproduccionesIlimitadas() {
+        return limiteReproducciones == -1;
+    }
+
+    @Override
+    public String toString() {
+        return "TipoSuscripcion{" +
+                "nombre=" + name() +
+                "precioMensual=" + precioMensual +
+                '}';
     }
 }

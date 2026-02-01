@@ -15,12 +15,20 @@ public enum TipoAnuncio {
         this.costoPorImpresion = costoPorImpresion;
     }
 
-    // Getters
+    // Metodos
     public int getDuracionSegundos() {
         return duracionSegundos;
     }
 
     public double getCostoPorImpresion() {
         return costoPorImpresion;
+    }
+
+    @Override
+    public String toString() {
+        return "TipoAnuncio{" +
+                "duracionSegundos=" + duracionSegundos +
+                ", costoPorImpresion=" + costoPorImpresion +
+                '}';
     }
 }
