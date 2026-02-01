@@ -1,36 +1,41 @@
 package contenido;
 
+import excepciones.contenido.ContenidoNoDisponibleException;
+import excepciones.contenido.DuracionInvalidaException;
 import usuarios.Usuario;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
 
 public abstract class Contenido {
 
     // Atributos
-    private final String id;
-    private String titulo;
-    private int reproducciones;
-    private int likes;
-    private int duracionSegundos;
-    private ArrayList<String> tags;
-    private boolean disponible;
-    private Date fechaPublicacion;
-    private ArrayList<Playlist> playlists;
-    private Plataforma plataforma;
+    protected String id;                        // Identificador único del contenido.
+    protected String titulo;                    // Título del contenido
+    protected int reproducciones;               // Contador de reproducciones
+    protected int likes;                        // Contador de “me gusta”
+    protected int duracionSegundos;             // Duración (en segundos).
+    protected ArrayList<String> tags;           // Etiquetas asociadas al contenido.
+    protected boolean disponible;               // Indica si el contenido está disponible.
+    protected Date fechaPublicacion;            // Fecha de publicación
 
     // Constructor
-    public Contenido(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Plataforma plataforma) {
-        this.id = id;
+    public Contenido(String titulo, int duracionSegundos) throws DuracionInvalidaException {
+
+        // validaciones
+        if (duracionSegundos <= 0) throw new DuracionInvalidaException();
+
+        // asignación de valores
+        this.id = UUID.randomUUID().toString();
         this.titulo = titulo;
-        this.reproducciones = reproducciones;
-        this.likes = likes;
+        this.reproducciones = 0;
+        this.likes = 0;
         this.duracionSegundos = duracionSegundos;
         this.tags = new ArrayList<>();
-        this.disponible = disponible;
-        this.fechaPublicacion = fechaPublicacion;
-        this.playlists = new ArrayList<>();
-        this.plataforma = plataforma;
+        this.disponible = true;
+        this.fechaPublicacion = new Date();
     }
 
     // Getters and Setters
@@ -58,32 +63,17 @@ public abstract class Contenido {
         return likes;
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public int getDuracionSegundos() {
         return duracionSegundos;
     }
 
-    public void setDuracionSegundos(int duracionSegundos) {
-        this.duracionSegundos = duracionSegundos;
-    }
-
     public ArrayList<String> getTags() {
-        return tags;
+        return new ArrayList<>(tags); // copia defensiva
     }
 
-    public void addTag(String tags) {
-        this.tags.add(tags);
-    }
 
     public boolean isDisponible() {
         return disponible;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
     }
 
     public Date getFechaPublicacion() {
@@ -94,38 +84,77 @@ public abstract class Contenido {
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public ArrayList<Playlist> getPlaylists() {
-        return playlists;
-    }
-
-    public void addPlaylists(Playlist playlist) {
-        this.playlists.add(playlist);
-    }
-
-    public Plataforma getPlataforma() {
-        return plataforma;
-    }
-
-    public void setPlataforma(Plataforma plataforma) {
-        this.plataforma = plataforma;
-    }
-
     // Metodos
-    public abstract void reproducir();
+    public abstract void reproducir() throws ContenidoNoDisponibleException;
 
     public void aumentarReproducciones() {
         reproducciones++;
-    };
+    }
+
 
     public void agregarLike() {
         likes++;
-    };
+    }
+
 
     public boolean esPopular() {
         return reproducciones > 100000;
-    };
+    }
 
-    public  void  validarDuracion(){
-        // TODO
-    };
+    public void validarDuracion() throws DuracionInvalidaException {
+        if (duracionSegundos <= 0) throw new DuracionInvalidaException();
+    }
+
+
+    public void agregarTag(String tag) {
+        if (!this.tieneTag(tag)) {
+            this.tags.add(tag);
+        }
+    }
+
+    public boolean tieneTag(String tag) {
+        for (String localTag : tags) {
+            if (tag.equalsIgnoreCase(localTag)) return true;
+        }
+
+        return false;
+    }
+
+    public void marcarNoDisponible() {
+        disponible = false;
+    }
+
+    public void marcarDisponible() {
+        disponible = true;
+    }
+
+    public String getDuracionFormateada() {
+        return duracionSegundos / 60 + ":" + duracionSegundos % 60;
+    }
+
+    @Override
+    public String toString() {
+        return "Contenido{" +
+                "id='" + id + '\'' +
+                ", titulo='" + titulo + '\'' +
+                ", reproducciones=" + reproducciones +
+                ", likes=" + likes +
+                ", duracionSegundos=" + duracionSegundos +
+                ", tags=" + tags +
+                ", disponible=" + disponible +
+                ", fechaPublicacion=" + fechaPublicacion +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Contenido contenido = (Contenido) o;
+        return Objects.equals(id, contenido.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
