@@ -1,4 +1,4 @@
-package artistas;
+package modelo;
 
 import contenido.Cancion;
 import enums.GeneroMusical;
