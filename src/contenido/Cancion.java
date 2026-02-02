@@ -2,10 +2,20 @@ package contenido;
 
 import artistas.Album;
 import enums.GeneroMusical;
+import excepciones.contenido.ArchivoAudioNoEncontradoException;
+import excepciones.contenido.ContenidoNoDisponibleException;
+import excepciones.contenido.DuracionInvalidaException;
+import excepciones.contenido.LetraNoDisponibleException;
+import excepciones.descarga.ContenidoYaDescargadoException;
+import excepciones.descarga.LimiteDescargasException;
 import interfaces.Descargable;
 import interfaces.Reproducible;
+
+import java.time.Year;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import artistas.Artista;
 
 /**
@@ -15,64 +25,43 @@ import artistas.Artista;
 public class Cancion extends Contenido implements Reproducible, Descargable {
 
     // Atributos
-    private String letra;               // Letra completa de la canción
-    private Artista artista;            // Referencia al artista (agregación)
-    private Album album;                // Referencia al álbum (agregación)
-    private GeneroMusical genero;       // Género de la canción
-    private String audioURL;            // URL del archivo de audio
-    private boolean explicit;           // Si contiene contenido explícito
-    private String ISRC;                // Código internacional de grabación
+    private String letra = null;                        // Letra completa de la canción
+    private Artista artista;                          // Referencia al artista (agregación)
+    private Album album;                              // Referencia al álbum (agregación)
+    private GeneroMusical genero;                     // Género de la canción
+    private String audioURL = null;                     // URL del archivo de audio
+    private boolean explicit = false;                 // Si contiene contenido explícito
+    private String ISRC;                         // Código internacional de grabación
+    private boolean reproduciendo = false;
+    private boolean pausado = false;
+    private boolean descargado = false;
 
     /**
      * Constructor principal de la clase Cancion.
      *
      * @param titulo Título de la canción
      * @param duracionSegundos Duración en segundos
-     * @param fechaPublicacion Fecha de publicación
-     * @param plataforma Plataforma de publicación
      * @param artista Artista principal
-     * @param album Álbum
      * @param genero Género musical
+     * @param letra Letra de la cancion
+     * @param explicit Es contenido explícito
      */
-    public Cancion(String titulo, int duracionSegundos, Date fechaPublicacion, Plataforma plataforma, Artista artista, Album album, GeneroMusical genero) {
-        super(UUID.randomUUID().toString(), titulo, 0, 0, duracionSegundos, true, fechaPublicacion, plataforma);
-        this.letra = "";
+
+    public Cancion(String titulo, int duracionSegundos, Artista artista, GeneroMusical genero, String letra, boolean explicit ) throws DuracionInvalidaException {
+        super(titulo, duracionSegundos);
         this.artista = artista;
-        this.album = album;
         this.genero = genero;
-        this.audioURL = "";
-        this.explicit = false;
-        ISRC = "";
-    }
+        this.letra = letra;
+        this.explicit = explicit;
+        this.ISRC = generarISRC();
 
-    /**
-     * Constructor para crear una canción sin artista.
-     */
-    public Cancion(String titulo, int duracionSegundos, Date fechaPublicacion, Plataforma plataforma, Album album, GeneroMusical genero) {
-        this(
-                titulo,
-                duracionSegundos,
-                fechaPublicacion,
-                plataforma,
-                null,
-                album,
-                genero
-        );
     }
-
     /**
-     * Constructor para crear una canción sin álbum.
+     * Constructor para crear una canción sin letra y contenido explícito.
      */
-    public Cancion(String titulo, int duracionSegundos, Date fechaPublicacion, Plataforma plataforma, Artista artista, GeneroMusical genero) {
-        this(
-                titulo,
-                duracionSegundos,
-                fechaPublicacion,
-                plataforma,
-                artista,
-                null,
-                genero
-        );
+    public Cancion(String titulo, int duracionSegundos, Artista artista, GeneroMusical genero) throws DuracionInvalidaException {
+        this(titulo, duracionSegundos, artista, genero, null, false);
+
     }
 
     // Getters and setters
@@ -132,22 +121,63 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
         this.ISRC = ISRC;
     }
 
+    public boolean isReproduciendo() {
+        return reproduciendo;
+    }
+
+    public boolean isPausado() {
+        return pausado;
+    }
+
+    public boolean isDescargado() {
+        return descargado;
+    }
+
+    public void setDescargado(boolean descargado) {
+        this.descargado = descargado;
+    }
+
     // Metodos
     @Override
-    public void reproducir() {
-       // TODO
+    public void reproducir() throws ContenidoNoDisponibleException {
+       if(!disponible) throw new ContenidoNoDisponibleException();
+
+       aumentarReproducciones();
+       play();
     }
 
     @Override
-    public boolean descargable() {
-        // TODO
-        return false;
+    public void play() {
+        reproduciendo = true;
+        System.out.println("Mostrando informacion...");
+    }
+
+    @Override
+    public void pause() {
+        if(reproduciendo) pausado = true;
+    }
+
+    @Override
+    public void stop() {
+        reproduciendo = false;
+        pausado = false;
+    }
+
+    @Override
+    public int getDuracion() {
+        return getDuracionSegundos();
+    }
+
+    @Override
+    public boolean descargar() throws LimiteDescargasException, ContenidoYaDescargadoException {
+        if (descargado) throw new ContenidoYaDescargadoException();
+        return true;
     }
 
     @Override
     public boolean eliminarDescarga() {
-        // TODO
-        return false;
+        descargado = false;
+        return true;
     }
 
     @Override
@@ -156,30 +186,22 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
         return 0;
     }
 
-    @Override
-    public void play() {
-        // TODO
-    }
+    public String generarISRC() {
+        String year = String.valueOf(Year.now().getValue()).substring(2);
 
-    @Override
-    public void pause() {
-        // TODO
-    }
+        int number = new AtomicInteger(1).getAndIncrement();
 
-    @Override
-    public void stop() {
-        // TODO
-    }
+        String formattedNumber = String.format("%05d", number);
 
-    @Override
-    public int getDuracion() {
-        return super.getDuracionSegundos();
+        return "ES" + "ABC" + year + formattedNumber;
     }
 
     /**
      * Devuelve la letra de la canción.
      */
-    public  String obtenerLetra() {
+    public  String obtenerLetra() throws LetraNoDisponibleException {
+        if(letra == null) throw new LetraNoDisponibleException();
+
         return letra;
     }
 
@@ -197,5 +219,17 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
      */
     public void cambiarGenero(GeneroMusical nuevoGenero){
         this.setGenero(genero);
+    }
+
+    public void validarAudioURL() throws ArchivoAudioNoEncontradoException {
+         if(audioURL == null) throw new ArchivoAudioNoEncontradoException();
+    }
+
+    @Override
+    public String toString() {
+        return "Cancion{" +
+                ", artista=" + artista +
+                ", duracion=" + duracionSegundos +
+                '}';
     }
 }

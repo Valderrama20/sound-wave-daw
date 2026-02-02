@@ -105,7 +105,6 @@ public abstract class Contenido {
         if (duracionSegundos <= 0) throw new DuracionInvalidaException();
     }
 
-
     public void agregarTag(String tag) {
         if (!this.tieneTag(tag)) {
             this.tags.add(tag);

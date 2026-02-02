@@ -1,6 +1,9 @@
 package contenido;
 
 import enums.CategoriaPodcast;
+import excepciones.contenido.*;
+import excepciones.descarga.ContenidoYaDescargadoException;
+import excepciones.descarga.LimiteDescargasException;
 import interfaces.Descargable;
 import interfaces.Reproducible;
 import usuarios.Usuario;
@@ -15,64 +18,45 @@ import java.util.Date;
 public class Podcast extends Contenido implements Reproducible, Descargable {
 
     // Atributos
-    private Creador creador;                 // Creador del podcast (agregación)
-    private int numeroEpisodio;              // Número de episodio
-    private int temporada;                   // Temporada a la que pertenece
-    private String descripcion;              // Descripción del episodio
-    private CategoriaPodcast categoria;      // Categoría
-    private ArrayList<String> invitados;     // Lista de invitados
-    private String transcripcion;            // Transcripción del episodio
+    private Creador creador;                        // Creador del podcast (agregación)
+    private int numeroEpisodio;                     // Número de episodio
+    private int temporada;                          // Temporada a la que pertenece
+    private String descripcion = null;              // Descripción del episodio
+    private CategoriaPodcast categoria;             // Categoría
+    private ArrayList<String> invitados;            // Lista de invitados
+    private String transcripcion = null;            // Transcripción del episodio
+    private boolean reproduciendo = false;
+    private boolean pausado = false;
+    private boolean descargado = false;
 
     /**
      * Constructor principal de la clase Podcast.
      *
-     * @param id Identificador único
      * @param titulo Título del episodio
-     * @param reproducciones Número de reproducciones
-     * @param likes Número de likes
      * @param duracionSegundos Duración en segundos
-     * @param disponible Indica si está disponible
-     * @param fechaPublicacion Fecha de publicación
-     * @param plataforma Plataforma
      * @param creador Creador del podcast
      * @param numeroEpisodio Número del episodio
      * @param temporada Temporada
-     * @param descripcion Descripción
      * @param categoria Categoría
-     * @param transcripcion Transcripción
+     * @param description Descripcion
      */
-    public Podcast(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Plataforma plataforma, Creador creador, int numeroEpisodio, int temporada, String descripcion, CategoriaPodcast categoria, String transcripcion) {
-        super(id, titulo, reproducciones, likes, duracionSegundos, disponible, fechaPublicacion, plataforma);
+    public Podcast(String titulo, int duracionSegundos, Creador creador, int numeroEpisodio, int temporada, CategoriaPodcast categoria, String description) throws DuracionInvalidaException {
+        super(titulo, duracionSegundos);
         this.creador = creador;
         this.numeroEpisodio = numeroEpisodio;
         this.temporada = temporada;
-        this.descripcion = descripcion;
         this.categoria = categoria;
         this.invitados = new ArrayList<>();
-        this.transcripcion = transcripcion;
+        this.descripcion = description;
     }
 
     /**
      * Constructor para crear un podcast sin creador asignado.
      */
-    public Podcast(String id, String titulo, int reproducciones, int likes, int duracionSegundos, boolean disponible, Date fechaPublicacion, Plataforma plataforma, int numeroEpisodio, int temporada, String descripcion, CategoriaPodcast categoria, String transcripcion) {
-        this(
-                id,
-                titulo,
-                reproducciones,
-                likes,
-                duracionSegundos,
-                disponible,
-                fechaPublicacion,
-                plataforma,
-                null,
-                numeroEpisodio,
-                temporada,
-                descripcion,
-                categoria,
-                transcripcion
-        );
+    public Podcast(String titulo, int duracionSegundos, Creador creador, int numeroEpisodio, int temporada, CategoriaPodcast categoria) throws DuracionInvalidaException {
+        this(titulo, duracionSegundos, creador, numeroEpisodio, temporada, categoria, null);
     }
+
 
     // Getters and Setters
     public Creador getCreador() {
@@ -116,7 +100,7 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
     }
 
     public ArrayList<String> getInvitados() {
-        return invitados;
+        return new ArrayList<>(invitados);
     }
 
     public void addInvitados(String invitado) {
@@ -131,47 +115,70 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
         this.transcripcion = transcripcion;
     }
 
+    public boolean isReproduciendo() {
+        return reproduciendo;
+    }
+
+    public boolean isPausado() {
+        return pausado;
+    }
+
+    public boolean isDescargado() {
+        return descargado;
+    }
+
+    public void setDescargado(boolean descargado) {
+        this.descargado = descargado;
+    }
+
     // Metodos
     @Override
-    public void reproducir() {
-        // TODO
+    public void reproducir() throws ContenidoNoDisponibleException {
+        if(!disponible) throw new ContenidoNoDisponibleException();
+
+        aumentarReproducciones();
+        play();
+
     }
 
     @Override
-    public boolean descargable() {
-        // TODO
-        return false;
+    public void play() {
+        reproduciendo = true;
+        System.out.println("Mostrando informacion...");
+    }
+
+    @Override
+    public void pause() {
+        if(reproduciendo) pausado = true;
+    }
+
+    @Override
+    public void stop() {
+        reproduciendo = false;
+        pausado = false;
+    }
+
+    @Override
+    public int getDuracion() {
+        return getDuracionSegundos();
+    }
+
+    @Override
+    public boolean descargar() throws LimiteDescargasException, ContenidoYaDescargadoException {
+        if (descargado) throw new ContenidoYaDescargadoException();
+        return true;
     }
 
     @Override
     public boolean eliminarDescarga() {
-        // TODO
+        descargado = false;
+        return true;
     }
 
     @Override
     public int espacioRequerido() {
         // TODO
         return 0;
-    }
-
-    @Override
-    public void play() {
-        // TODO
-    }
-
-    @Override
-    public void pause() {
-        // TODO
-    }
-
-    @Override
-    public void stop() {
-        // TODO
-    }
-
-    @Override
-    public int getDuracion() {
-        return super.getDuracionSegundos();
     }
 
     /**
@@ -194,8 +201,25 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
      * Indica si el episodio pertenece a una temporada nueva.
      */
     public boolean esTemporadaNueva() {
-        // TODO
-        return true;
+        return temporada >= 1;
     }
 
+    public String obtenerTranscripcion() throws TranscripcionNoDisponibleException {
+        if(transcripcion == null) throw new TranscripcionNoDisponibleException();
+
+        return transcripcion;
+    }
+
+    public void validarEpisodio() throws EpisodioNoEncontradoException {
+        // TODO
+    }
+
+    @Override
+    public String toString() {
+        return "Podcast{" +
+                "creador=" + creador +
+                ", numeroEpisodio=" + numeroEpisodio +
+                ", temporada=" + temporada +
+                '}';
+    }
 }

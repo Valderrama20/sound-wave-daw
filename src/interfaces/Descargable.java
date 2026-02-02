@@ -1,5 +1,8 @@
 package interfaces;
 
+import excepciones.descarga.ContenidoYaDescargadoException;
+import excepciones.descarga.LimiteDescargasException;
+
 /**
  * Contrato para contenido descargable para uso offline
  */
@@ -10,7 +13,7 @@ public interface Descargable {
      *
      * @return true si la descarga se realizó correctamente, false en caso contrario
      */
-    boolean descargable();
+    boolean descargar() throws LimiteDescargasException, ContenidoYaDescargadoException;
 
     /**
      * Elimina la descarga existente

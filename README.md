@@ -1,4 +1,4 @@
-# SoundWave — Documentación técnica
++# SoundWave — Documentación técnica
 
 ---
 
