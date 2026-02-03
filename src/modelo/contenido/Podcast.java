@@ -1,4 +1,4 @@
-package contenido;
+package modelo.contenido;
 
 import enums.CategoriaPodcast;
 import excepciones.contenido.*;
@@ -6,10 +6,8 @@ import excepciones.descarga.ContenidoYaDescargadoException;
 import excepciones.descarga.LimiteDescargasException;
 import interfaces.Descargable;
 import interfaces.Reproducible;
-import usuarios.Usuario;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Representa un episodio de podcast dentro de la plataforma.

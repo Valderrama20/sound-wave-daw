@@ -1,6 +1,6 @@
-package contenido;
+package modelo.contenido;
 
-import modelo.Album;
+import modelo.artistas.Album;
 import enums.GeneroMusical;
 import excepciones.contenido.ArchivoAudioNoEncontradoException;
 import excepciones.contenido.ContenidoNoDisponibleException;
@@ -14,7 +14,7 @@ import interfaces.Reproducible;
 import java.time.Year;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import modelo.Artista;
+import modelo.artistas.Artista;
 
 /**
  * Representa una canción dentro de la plataforma.

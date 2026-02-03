@@ -1,8 +1,7 @@
-package contenido;
+package modelo.contenido;
 
 import excepciones.contenido.ContenidoNoDisponibleException;
 import excepciones.contenido.DuracionInvalidaException;
-import usuarios.Usuario;
 
 import java.util.ArrayList;
 import java.util.Date;

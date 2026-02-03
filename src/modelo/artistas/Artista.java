@@ -1,14 +1,11 @@
-package modelo;
+package modelo.artistas;
 
-import contenido.Cancion;
-import contenido.Contenido;
+import modelo.contenido.Cancion;
+import modelo.contenido.Contenido;
 import excepciones.artista.AlbumYaExisteException;
 import excepciones.artista.ArtistaNoVerificadoException;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class Artista {
 
@@ -73,7 +70,7 @@ public class Artista {
     }
 
     public ArrayList<Cancion> getDiscografia() {
-        return discografia;
+        return new ArrayList<>(discografia);
     }
 
     public void addCancion(Cancion Cancion) {
@@ -81,7 +78,7 @@ public class Artista {
     }
 
     public ArrayList<Album> getAlbumes() {
-        return albumes;
+        return new ArrayList<>(albumes);
     }
 
     public void addAlbume(Album album) {
@@ -124,8 +121,7 @@ public class Artista {
             if(album.getTitulo().equals(titulo)) throw new AlbumYaExisteException();
         }
 
-        //TODO
-        Album newAlbum = new Album();
+        Album newAlbum = new Album(titulo, this, fecha);
         addAlbume(newAlbum);
         return newAlbum;
     };
@@ -166,5 +162,32 @@ public class Artista {
 
     public void incrementarOyentes() {
         oyentesMensuales++;
+    }
+
+    @Override
+    public String toString() {
+        return "Artista{" +
+                "id='" + id + '\'' +
+                ", nombreArtistico='" + nombreArtistico + '\'' +
+                ", nombreReal='" + nombreReal + '\'' +
+                ", paisOrigen='" + paisOrigen + '\'' +
+                ", discografia=" + discografia +
+                ", albumes=" + albumes +
+                ", oyentesMensuales=" + oyentesMensuales +
+                ", verificado=" + verificado +
+                ", biografia='" + biografia + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Artista artista = (Artista) o;
+        return oyentesMensuales == artista.oyentesMensuales && verificado == artista.verificado && Objects.equals(id, artista.id) && Objects.equals(nombreArtistico, artista.nombreArtistico) && Objects.equals(nombreReal, artista.nombreReal) && Objects.equals(paisOrigen, artista.paisOrigen) && Objects.equals(discografia, artista.discografia) && Objects.equals(albumes, artista.albumes) && Objects.equals(biografia, artista.biografia);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombreArtistico, nombreReal, paisOrigen, discografia, albumes, oyentesMensuales, verificado, biografia);
     }
 }

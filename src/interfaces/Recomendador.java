@@ -1,6 +1,6 @@
 package interfaces;
 
-import contenido.Contenido;
+import modelo.contenido.Contenido;
 import usuarios.Usuario;
 
 import java.util.ArrayList;

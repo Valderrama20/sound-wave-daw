@@ -1,6 +1,6 @@
 package usuarios;
 
-import contenido.Contenido;
+import modelo.contenido.Contenido;
 import enums.TipoSuscripcion;
 
 import java.util.Date;
