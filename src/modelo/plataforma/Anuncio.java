@@ -2,6 +2,7 @@ package modelo.plataforma;
 
 import enums.TipoAnuncio;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Anuncio {
@@ -12,7 +13,7 @@ public class Anuncio {
     private int duracionSegundos;
     private String audioURL;
     private TipoAnuncio tipo;
-    private int impresiones;
+    private int impresiones = 0;
     private double presupuesto;
     private boolean activo;
 
@@ -87,11 +88,68 @@ public class Anuncio {
     }
 
     // Metodos
-    void reproducir() {
+    public void reproducir() {
         if(isActivo()) {
             System.out.println("Reproduciendo anuncio...");
         }
     }
 
+    public void registrarImpresion() {
+        impresiones++;
+        presupuesto -= tipo.getCostoPorImpresion();
 
+        if(presupuesto <= 0) {
+            activo = false;
+        }
+    }
+
+    public double calcularCostoPorImpresion() {
+        return  tipo.getCostoPorImpresion();
+    }
+
+    public double calcularCostoTotal() {
+        return impresiones * tipo.getCostoPorImpresion();
+    }
+
+    public int calcularImpresionesRestantes() {
+        return (int) (presupuesto / tipo.getCostoPorImpresion());
+    }
+
+    public void desactivar() {
+        setActivo(false);
+    }
+
+    public void activar() {
+        setActivo(true);
+    }
+
+    public boolean puedeMostrarse() {
+        return activo && presupuesto > 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Anuncio{" +
+                "id='" + id + '\'' +
+                ", empresa='" + empresa + '\'' +
+                ", duracionSegundos=" + duracionSegundos +
+                ", audioURL='" + audioURL + '\'' +
+                ", tipo=" + tipo +
+                ", impresiones=" + impresiones +
+                ", presupuesto=" + presupuesto +
+                ", activo=" + activo +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Anuncio anuncio = (Anuncio) o;
+        return duracionSegundos == anuncio.duracionSegundos && impresiones == anuncio.impresiones && Double.compare(presupuesto, anuncio.presupuesto) == 0 && activo == anuncio.activo && Objects.equals(id, anuncio.id) && Objects.equals(empresa, anuncio.empresa) && Objects.equals(audioURL, anuncio.audioURL) && tipo == anuncio.tipo;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, empresa, duracionSegundos, audioURL, tipo, impresiones, presupuesto, activo);
+    }
 }
