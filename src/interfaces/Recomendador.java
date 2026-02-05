@@ -1,7 +1,7 @@
 package interfaces;
 
 import modelo.contenido.Contenido;
-import usuarios.Usuario;
+import modelo.usuarios.Usuario;
 
 import java.util.ArrayList;
 

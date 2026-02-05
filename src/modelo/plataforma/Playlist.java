@@ -1,13 +1,13 @@
 package modelo.plataforma;
 
+import enums.CriterioOrden;
 import excepciones.playlist.ContenidoDuplicadoException;
 import excepciones.playlist.PlaylistLlenaException;
+import excepciones.playlist.PlaylistVaciaException;
 import modelo.contenido.Contenido;
-import usuarios.Usuario;
+import modelo.usuarios.Usuario;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class Playlist {
 
@@ -150,5 +150,93 @@ public class Playlist {
         }
 
         return false;
+    }
+
+    public void  ordenarPor(CriterioOrden criterio) throws PlaylistVaciaException {
+        if(estaVacia()) throw new PlaylistVaciaException();
+        // TODO logica fuerte
+
+    }
+
+    public int getDuracionTotal() {
+        int duracionTotalContenido = 0;
+
+        for (Contenido contenido : contenidos){
+            duracionTotalContenido += contenido.getDuracionSegundos();
+        }
+
+        return duracionTotalContenido;
+    }
+
+    public String getDuracionTotalFormateada() {
+        int duracionTotal = getDuracionTotal();
+
+        return duracionTotal / 3600 + ":" + duracionTotal / 60 + ":" + duracionTotal % 60;
+    }
+
+    public void shuffle() {
+        Collections.shuffle(contenidos);
+    }
+
+    public ArrayList<Contenido> buscarContenido(String termino) {
+        return (ArrayList<Contenido>) contenidos.stream().filter(contenido -> contenido.getTitulo().contains(termino)).toList();
+    }
+
+    public void hacerPublica(){
+        setEsPublica(true);
+    }
+
+    public void hacerPrivada(){
+        setEsPublica(false);
+    }
+
+    public void incrementarSeguidores() {
+        seguidores++;
+    }
+
+    public void decrementarSeguidores() {
+        seguidores--;
+    }
+
+    public int getNumContenidos() {
+        return contenidos.size();
+    }
+
+    public boolean estaVacia() {
+        return contenidos.isEmpty();
+    }
+
+    public Contenido getContenido(int posicion) {
+        if(contenidos.size() <= posicion) return null;
+
+        return contenidos.get(posicion);
+    }
+
+    @Override
+    public String toString() {
+        return "Playlist{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", creador=" + creador +
+                ", contenidos=" + contenidos +
+                ", esPublica=" + esPublica +
+                ", seguidores=" + seguidores +
+                ", descripcion='" + descripcion + '\'' +
+                ", portadaURL='" + portadaURL + '\'' +
+                ", fechaCreacion=" + fechaCreacion +
+                ", maxContenidos=" + maxContenidos +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Playlist playlist = (Playlist) o;
+        return esPublica == playlist.esPublica && seguidores == playlist.seguidores && maxContenidos == playlist.maxContenidos && Objects.equals(id, playlist.id) && Objects.equals(nombre, playlist.nombre) && Objects.equals(creador, playlist.creador) && Objects.equals(contenidos, playlist.contenidos) && Objects.equals(descripcion, playlist.descripcion) && Objects.equals(portadaURL, playlist.portadaURL) && Objects.equals(fechaCreacion, playlist.fechaCreacion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre, creador, contenidos, esPublica, seguidores, descripcion, portadaURL, fechaCreacion, maxContenidos);
     }
 }
