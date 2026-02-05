@@ -5,6 +5,7 @@ import excepciones.artista.LimiteEpisodiosException;
 import excepciones.contenido.EpisodioNoEncontradoException;
 import modelo.contenido.Cancion;
 import modelo.contenido.Podcast;
+import utilidades.EstadisticasCreador;
 
 import java.util.*;
 
@@ -95,7 +96,7 @@ public class Creador {
     public void publicarPodcast(Podcast episodio) throws LimiteEpisodiosException {
         if(episodios.size() >= MAX_EPISODIOS) throw new LimiteEpisodiosException();
 
-        addEpisodio(episodio);
+        episodios.add(episodio);
     }
 
     public EstadisticasCreador EstadisticasCreador() {

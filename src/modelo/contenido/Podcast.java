@@ -6,6 +6,7 @@ import excepciones.descarga.ContenidoYaDescargadoException;
 import excepciones.descarga.LimiteDescargasException;
 import interfaces.Descargable;
 import interfaces.Reproducible;
+import modelo.artistas.Creador;
 
 import java.util.ArrayList;
 
