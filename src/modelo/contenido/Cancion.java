@@ -198,7 +198,7 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
      * Devuelve la letra de la canción.
      */
     public  String obtenerLetra() throws LetraNoDisponibleException {
-        if(letra == null) throw new LetraNoDisponibleException();
+        if(letra == null || letra.isEmpty()) throw new LetraNoDisponibleException();
 
         return letra;
     }
