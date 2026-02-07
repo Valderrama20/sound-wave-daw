@@ -78,7 +78,7 @@ public abstract class Usuario {
         this.suscripcion = suscripcion;
     }
 
-    public ArrayList<Playlist> getMisPlaylist() {
+    public ArrayList<Playlist> getMisPlaylists() {
         return new ArrayList<>(misPlaylist);
     }
 
@@ -101,13 +101,13 @@ public abstract class Usuario {
     // Metodos
     public abstract void reproducir(Contenido contenido) throws ContenidoNoDisponibleException, LimiteDiarioAlcanzadoException, AnuncioRequeridoException;
 
-    public Playlist crearPLaylist(String nombre){
+    public Playlist crearPlaylist(String nombre){
         Playlist newPLaylist = new Playlist(nombre, this);
         misPlaylist.add(newPLaylist);
         return newPLaylist;
     }
 
-    public void seguirPLaylist(Playlist playlist){
+    public void seguirPlaylist(Playlist playlist){
         playlistsSeguidas.add(playlist);
     }
 

@@ -1,6 +1,7 @@
 package modelo.usuarios;
 
 import excepciones.contenido.ContenidoNoDisponibleException;
+import excepciones.descarga.ContenidoYaDescargadoException;
 import excepciones.usuario.AnuncioRequeridoException;
 import excepciones.usuario.EmailInvalidoException;
 import excepciones.usuario.LimiteDiarioAlcanzadoException;
@@ -68,7 +69,15 @@ public class UsuarioPremium extends Usuario{
         contenido.reproducir();
     }
 
-    public void descargar(Contenido contenido) {
+    public void descargar(Contenido contenido) throws ContenidoYaDescargadoException {
+
+        // Verificamos si ya la tenemos descargada
+        for (Contenido descarga: descargados) {
+            if(descarga.getId().equals(contenido.getId())){
+                throw new ContenidoYaDescargadoException();
+            }
+        }
+
          descargados.add(contenido);
     }
 

@@ -99,7 +99,7 @@ public class Creador {
         episodios.add(episodio);
     }
 
-    public EstadisticasCreador EstadisticasCreador() {
+    public EstadisticasCreador obtenerEstadisticas() {
         return new EstadisticasCreador(this);
     }
 
