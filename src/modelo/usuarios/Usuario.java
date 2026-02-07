@@ -31,7 +31,10 @@ public abstract class Usuario {
 
     // Constructor
     public Usuario(String nombre, String email, String password, TipoSuscripcion suscripcion) throws EmailInvalidoException, PasswordDebilException {
-       // TODO validas usuario y contraseña
+        validarEmail(email);
+        validarPassword(password);
+
+        // TODO validas usuario y contraseña
         this.id = UUID.randomUUID().toString();
         this.nombre = nombre;
         this.email = email;
@@ -127,7 +130,7 @@ public abstract class Usuario {
     public boolean validarEmail(String email) throws EmailInvalidoException{
         String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
 
-        if(email == null || !email.matches(regex)) {
+        if(email == null || email.isEmpty() || !email.matches(regex)) {
             throw new EmailInvalidoException();
         }
 
@@ -141,9 +144,9 @@ public abstract class Usuario {
 
         String regex =
                         "^(?=.*[a-z])" +      // minúscula
-                        "(?=.*[A-Z])" +       // mayúscula
+                        //"(?=.*[A-Z])" +       // mayúscula
                         "(?=.*\\d)" +         // número
-                        "(?=.*[@$!%*?&#])" +  // especial
+                        //"(?=.*[@$!%*?&#])" +  // especial
                         ".{8,}$";             // mínimo 8
 
         if (!password.matches(regex)) {

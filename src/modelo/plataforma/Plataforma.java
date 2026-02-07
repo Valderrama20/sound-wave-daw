@@ -81,27 +81,71 @@ public class Plataforma {
 
     // Gestión de usuarios
     public UsuarioPremium registrarUsuarioPremium(String nombre, String email, String password, TipoSuscripcion tipo) throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
-        return null;
+
+        // Verificar que el email no este uso
+        if(usuariosPorEmail.containsKey(email)) throw new UsuarioYaExisteException();
+
+        // Crear el usuario
+        UsuarioPremium newUser = new UsuarioPremium(nombre, email, password, tipo);
+
+        // Agregar el nuevo usuario a la lista
+        usuariosPorEmail.put(email, newUser);
+
+        // Retornal el usuario creado
+        return newUser;
     }
 
     public UsuarioPremium registrarUsuarioPremium(String nombre, String email, String password) throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
-        return null;
+        return registrarUsuarioPremium(nombre,email,password, TipoSuscripcion.PREMIUM);
     }
 
     public UsuarioGratuito registrarUsuarioGratuito(String nombre, String email, String password) throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
-        return null;
+        // Verificar que el email no este uso
+        if(usuariosPorEmail.containsKey(email)) throw new UsuarioYaExisteException();
+
+        // Crear el usuario
+        UsuarioGratuito newUser = new UsuarioGratuito(nombre, email, password);
+
+        // Agregar el nuevo usuario a la lista
+        usuariosPorEmail.put(email, newUser);
+
+        // Retornal el usuario creado
+        return newUser;
     }
 
     public ArrayList<UsuarioPremium> getUsuariosPremium() {
-        return new ArrayList<>();
+        // Crear nuevo array list para los usuarios premium
+        ArrayList<UsuarioPremium> usuariosPremium = new ArrayList<>();
+
+        // Recorrer y seleccionar solo los premium
+        for(Usuario usuario: usuariosPorEmail.values()) {
+            if(usuario instanceof UsuarioPremium usuarioPremium){
+                usuariosPremium.add(usuarioPremium);
+            }
+        }
+
+        // Retornar usuarios premium
+        return usuariosPremium;
     }
 
     public ArrayList<UsuarioGratuito> getUsuariosGratuitos() {
-        return new ArrayList<>();
+        // Crear nuevo array list para los usuarios gratuitos
+        ArrayList<UsuarioGratuito> usuariosGratuitos = new ArrayList<>();
+
+        // Recorrer y seleccionar solo los gratuitos
+        for(Usuario usuario: usuariosPorEmail.values()) {
+            if(usuario instanceof UsuarioGratuito usuarioGratuito){
+                usuariosGratuitos.add(usuarioGratuito);
+            }
+        }
+
+        // Retornar los usuarios gratuitos
+        return usuariosGratuitos;
     }
 
     public ArrayList<Usuario> getTodosLosUsuarios() {
-        return new ArrayList<>();
+        // Crear un nuevo array list con los valores del hashMap y retornar
+        return new ArrayList<>(usuariosPorEmail.values());
     }
 
     public Usuario buscarUsuarioPorEmail(String email) {
