@@ -223,7 +223,7 @@ public class Plataforma {
     }
 
     public ArrayList<Album> getAlbumes() {
-        return new ArrayList<>();
+        return albumes;
     }
 
     // Gestión de canciones

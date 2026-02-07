@@ -6,6 +6,7 @@ import excepciones.artista.AlbumYaExisteException;
 import excepciones.artista.ArtistaNoVerificadoException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Artista {
 
@@ -127,15 +128,11 @@ public class Artista {
     };
 
     public ArrayList<Cancion> obtenerTopCanciones(int cantidad) {
-
-        // Hacemos una copia para no mutar el original
-        ArrayList<Cancion> discografiaCopia = new ArrayList<>(discografia);
-
-        // Ordenamos por reproducciones
-        discografiaCopia.sort(Comparator.comparing(Contenido::getReproducciones).reversed());
-
-        // retornamos la lista recortada
-        return (ArrayList<Cancion>) discografiaCopia.subList(0, Math.min(cantidad, discografiaCopia.size()));
+        return discografia
+                .stream()
+                .sorted(Comparator.comparing(Cancion::getReproducciones).reversed())
+                .limit(cantidad)
+                .collect(Collectors.toCollection(ArrayList::new));
     };
 
     public double calcularPromedioReproducciones(){
@@ -153,7 +150,7 @@ public class Artista {
             totalReproducciones += cancion.getReproducciones();
         }
 
-        return  totalReproducciones;
+        return totalReproducciones;
     }
 
     public void verificar() {

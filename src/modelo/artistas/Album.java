@@ -111,9 +111,10 @@ public class Album {
         if(MAX_CANCIONES <= canciones.size()) throw new AlbumCompletoException();
 
         Cancion cancion = new Cancion(titulo, duracionSegundos, artista, genero, letra, explicit);
-
         cancion.setAlbum(this);
+
         addCancion(cancion);
+        artista.addCancion(cancion);
 
         return cancion;
     }
@@ -124,7 +125,7 @@ public class Album {
 
     public void eliminarCancion(int posicion) throws CancionNoEncontradaException {
 
-        if(canciones.size() <= posicion) throw new CancionNoEncontradaException();
+        if(canciones.size() <= posicion || posicion <= 0 ) throw new CancionNoEncontradaException();
 
         canciones.remove(posicion);
     }
@@ -154,13 +155,16 @@ public class Album {
     }
 
     public void ordenarPorPopularidad() {
-        canciones.sort(Comparator.comparing(Cancion::getReproducciones));
+        canciones.sort(Comparator.comparing(Cancion::getReproducciones).reversed());
     }
 
     public Cancion getCancion(int posicion) throws CancionNoEncontradaException {
         if(canciones.size() <= posicion) throw new CancionNoEncontradaException();
 
-        return canciones.get(posicion);
+        // Por alguna razon tengo que poner menos una para obtener la primera cancion
+        // el tes me pìde la posicion 1, pero el array list comienza por 0, por eso rompe
+        // el test
+        return canciones.get(posicion-1);
     }
 
     public int getTotalReproducciones() {
