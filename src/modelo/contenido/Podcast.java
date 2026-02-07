@@ -103,6 +103,13 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
     }
 
     public void addInvitados(String invitado) {
+        // Verificar que no exista el invitado
+        for (String invitadoListado: invitados){
+            if(invitadoListado.toLowerCase().contains(invitado.toLowerCase())){
+                return;
+            }
+        }
+
         this.invitados.add(invitado);
     }
 

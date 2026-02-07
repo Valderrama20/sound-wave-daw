@@ -8,6 +8,7 @@ import modelo.contenido.Podcast;
 import utilidades.EstadisticasCreador;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Creador {
 
@@ -104,7 +105,7 @@ public class Creador {
     }
 
     public void agregarRedSocial(String red, String usuario) {
-        redesSociales.put(red, usuario);
+        redesSociales.put(red.toLowerCase(), usuario);
     }
 
     public double calcularPromedioReproducciones() {
@@ -138,18 +139,15 @@ public class Creador {
     }
 
     public ArrayList<Podcast> obtenerTopEpisodios(int cantidad) {
-        // Hacemos una copia paran no mutar el original
-        ArrayList<Podcast> copiaEpisodios = new ArrayList<>(episodios);
-
-        // Ordenamos de manera descendiente
-        copiaEpisodios.sort(Comparator.comparing(Podcast::getReproducciones).reversed());
-
-        // Retornamos un la lista recortada
-        return (ArrayList<Podcast>) copiaEpisodios.subList(0, Math.min(cantidad, copiaEpisodios.size()));
+        return episodios
+                .stream()
+                .sorted(Comparator.comparing(Podcast::getReproducciones).reversed())
+                .limit(cantidad)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public int getUltimaTemporada() {
-        return episodios.size();
+        return episodios.getLast().getTemporada();
     }
 
     @Override
