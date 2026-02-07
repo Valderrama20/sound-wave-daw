@@ -5,6 +5,7 @@ import excepciones.usuario.AnuncioRequeridoException;
 import excepciones.usuario.EmailInvalidoException;
 import excepciones.usuario.LimiteDiarioAlcanzadoException;
 import excepciones.usuario.PasswordDebilException;
+import modelo.contenido.Cancion;
 import modelo.contenido.Contenido;
 import enums.TipoSuscripcion;
 import modelo.plataforma.Anuncio;
@@ -27,6 +28,7 @@ public class UsuarioGratuito extends Usuario {
     // Constructor
     public UsuarioGratuito(String nombre, String email, String password) throws EmailInvalidoException, PasswordDebilException {
         super( nombre, email, password, TipoSuscripcion.GRATUITO);
+        this.limiteReproducciones = LIMITE_DIARIO;
     }
 
     // Getters and setters
@@ -75,21 +77,25 @@ public class UsuarioGratuito extends Usuario {
         }
 
         reproduccionesHoy++;
+        cancionesSinAnuncio++;
+        fechaUltimaReproduccion = new Date();
         contenido.reproducir();
     }
 
     public void verAnuncio(Anuncio anuncio) {
-        // TODO
+        anunciosEscuchados++;
+        cancionesSinAnuncio = 0;
         ultimoAnuncio = new Date();
+
         System.out.println("Viendo un anuncio...");
     }
 
     public boolean puedeReproducir() {
-        return reproduccionesHoy < limiteReproducciones;
+        return reproduccionesHoy < LIMITE_DIARIO;
     }
 
     public boolean debeVerAnuncio(){
-        return anunciosEscuchados % (CANCIONES_ENTRE_ANUNCIOS + 1) == 0;
+        return cancionesSinAnuncio >= CANCIONES_ENTRE_ANUNCIOS ;
     }
 
     public void reiniciarContadorDiario() {
@@ -101,7 +107,7 @@ public class UsuarioGratuito extends Usuario {
     }
 
     public int getCancionesHastaAnuncio(){
-        return CANCIONES_ENTRE_ANUNCIOS - (anunciosEscuchados % CANCIONES_ENTRE_ANUNCIOS);
+        return cancionesSinAnuncio;
     }
 
     @Override

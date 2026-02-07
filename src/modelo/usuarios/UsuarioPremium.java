@@ -65,7 +65,7 @@ public class UsuarioPremium extends Usuario{
     // Metodos
     @Override
     public void reproducir(Contenido contenido) throws ContenidoNoDisponibleException, LimiteDiarioAlcanzadoException, AnuncioRequeridoException {
-        // TODO las excepciones
+        agregarAlHistorial(contenido);
         contenido.reproducir();
     }
 
@@ -86,7 +86,7 @@ public class UsuarioPremium extends Usuario{
     }
 
     public boolean verificarEspacioDescarga(){
-         return descargados.size() < maxDescargas;
+         return descargados.size() >= maxDescargas;
     }
 
     public  int getDescargasRestantes() {
