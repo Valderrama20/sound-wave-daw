@@ -15,11 +15,11 @@ public class Creador {
     private String id;
     private String nombreCanal;
     private String nombre;
-    private ArrayList<Podcast> episodios;
+    private ArrayList<Podcast> episodios = new ArrayList<>();
     private int suscriptores = 0;
     private String descripcion;
-    private HashMap<String, String> redesSociales;
-    private ArrayList<CategoriaPodcast> categoriasPrincipales;
+    private HashMap<String, String> redesSociales = new HashMap<>();
+    private ArrayList<CategoriaPodcast> categoriasPrincipales = new ArrayList<>();
 
     private static final int MAX_EPISODIOS = 500;
 

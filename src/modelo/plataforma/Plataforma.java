@@ -118,6 +118,7 @@ public class Plataforma {
         ArrayList<UsuarioPremium> usuariosPremium = new ArrayList<>();
 
         // Recorrer y seleccionar solo los premium
+        // Utilizamos ".values()" para obtener solo los valores del hashMap y poder recorrerlos
         for(Usuario usuario: usuariosPorEmail.values()) {
             if(usuario instanceof UsuarioPremium usuarioPremium){
                 usuariosPremium.add(usuarioPremium);
@@ -154,18 +155,47 @@ public class Plataforma {
 
     // Gestión de artistas
     public Artista registrarArtista(String nombreArtistico, String nombreReal, String paisOrigen, boolean verificado) {
-        return null;
+        // Crear nuevo artista
+        Artista newArtista = new Artista(nombreArtistico,nombreReal, paisOrigen, verificado, null);
+
+        // Agregar el artista a la lista
+        artistas.put(nombreArtistico, newArtista);
+
+        // Retornar el artista
+        return newArtista;
     }
 
     public void registrarArtista(Artista artista) {
     }
 
     public ArrayList<Artista> getArtistasVerificados() {
-        return new ArrayList<>();
+        // Crear nuevo array para los artistas verificados
+        ArrayList<Artista> artistasVerificados = new ArrayList<>();
+
+        // Recorrer el hashMap y obtener solo los artistas verificados
+        for(Artista artista: artistas.values()){
+            if(artista.isVerificado()) {
+                artistasVerificados.add(artista);
+            }
+        }
+
+        // Retornar artistas verificados
+        return artistasVerificados;
     }
 
     public ArrayList<Artista> getArtistasNoVerificados() {
-        return new ArrayList<>();
+        // Crear nuevo array para los artistas no verificados
+        ArrayList<Artista> artistasNoVerificados = new ArrayList<>();
+
+        // Recorrer el hashMap y obtener solo los artistas no verificados
+        for(Artista artista: artistas.values()){
+            if(!artista.isVerificado()) {
+                artistasNoVerificados.add(artista);
+            }
+        }
+
+        // Retornar artistas no verificados
+        return artistasNoVerificados;
     }
 
     public Artista buscarArtista(String nombre) throws ArtistaNoEncontradoException {
@@ -174,7 +204,14 @@ public class Plataforma {
 
     // Gestión de álbumes
     public Album crearAlbum(Artista artista, String titulo, Date fecha) throws ArtistaNoVerificadoException, AlbumYaExisteException {
-        return null;
+        // Crear un nuevo album
+        Album newAlbum = artista.crearAlbum(titulo, fecha);
+
+        // Agregar el nuevo album a la lista
+        albumes.add(newAlbum);
+
+        // Retornar el nuevo album
+        return newAlbum;
     }
 
     public ArrayList<Album> getAlbumes() {
@@ -183,7 +220,14 @@ public class Plataforma {
 
     // Gestión de canciones
     public Cancion crearCancion(String titulo, int duracion, Artista artista, GeneroMusical genero) throws DuracionInvalidaException {
-        return null;
+        // Crear cancion y retornarla
+        Cancion newCancion = new Cancion(titulo, duracion, artista, genero);
+
+        // Agregar al catalogo
+        agregarContenidoCatalogo(newCancion);
+
+        // Retornar cancion creada
+        return newCancion;
     }
 
     public Cancion crearCancionEnAlbum(String titulo, int duracion, Artista artista, GeneroMusical genero, Album album) throws DuracionInvalidaException, AlbumCompletoException {
@@ -191,30 +235,69 @@ public class Plataforma {
     }
 
     public void agregarContenidoCatalogo(Contenido contenido) {
+        catalogo.add(contenido);
     }
 
     public ArrayList<Cancion> getCanciones() {
-        return new ArrayList<>();
+        // Crear array list para las canciones
+        ArrayList<Cancion> canciones = new ArrayList<>();
+
+        // Recorrer los albumes y obtener las canciones
+        for (Album album : albumes) {
+
+            // Utilizamos "addAll" para poder agregar una lista entera
+            canciones.addAll(album.getCanciones());
+        }
+
+        // Retornamos las canciones
+        return canciones;
     }
 
     // Gestión de creadores/podcasts
     public Creador registrarCreador(String nombreCanal, String nombre, String descripcion) {
-        return null;
+        // Crear nuevo creador
+        Creador newCreador = new Creador(nombreCanal, nombre, descripcion);
+
+        // Agregar al nuevo creado a la lista
+        creadores.put(nombreCanal, newCreador);
+
+        // Retornar nuevo creado
+        return newCreador;
     }
 
     public void registrarCreador(Creador creador) {
     }
 
     public Podcast crearPodcast(String titulo, int duracion, Creador creador, int numEpisodio, int temporada, CategoriaPodcast categoria) throws DuracionInvalidaException, LimiteEpisodiosException {
-        return null;
+        // Crear nuevo podcast
+        Podcast newPodcast = new Podcast(titulo, duracion, creador, numEpisodio, temporada, categoria);
+
+        // Publicar el podcast
+        creador.publicarPodcast(newPodcast);
+
+        // Agregar al catalogo
+        agregarContenidoCatalogo(newPodcast);
+
+        // Retornar el podcast creado
+        return newPodcast;
+
     }
 
     public ArrayList<Podcast> getPodcasts() {
-        return new ArrayList<>();
+        // Crear nuevo array para los podcasts
+        ArrayList<Podcast> allPodcasts = new ArrayList<>();
+
+        // Recorrer los creadores y obtener sus podcasts
+        for (Creador creador : creadores.values()) {
+            allPodcasts.addAll(creador.getEpisodios());
+        }
+
+        // Retornar todos los podcasts
+        return allPodcasts;
     }
 
     public ArrayList<Creador> getTodosLosCreadores() {
-        return new ArrayList<>();
+        return new ArrayList<>(creadores.values());
     }
 
     // Gestión de playlists públicas

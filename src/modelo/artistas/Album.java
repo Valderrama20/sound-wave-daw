@@ -108,10 +108,13 @@ public class Album {
 
     // Metodos
     public Cancion crearCancion(String titulo, int duracionSegundos, GeneroMusical genero, String letra, boolean explicit) throws AlbumCompletoException, DuracionInvalidaException {
-        if(MAX_CANCIONES >= canciones.size()) throw new AlbumCompletoException();
+        if(MAX_CANCIONES <= canciones.size()) throw new AlbumCompletoException();
 
         Cancion cancion = new Cancion(titulo, duracionSegundos, artista, genero, letra, explicit);
+
+        cancion.setAlbum(this);
         addCancion(cancion);
+
         return cancion;
     }
 
