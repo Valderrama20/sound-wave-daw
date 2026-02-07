@@ -302,11 +302,21 @@ public class Plataforma {
 
     // Gestión de playlists públicas
     public Playlist crearPlaylistPublica(String nombre, Usuario creador) {
-        return null;
+        // Crear nueva playlist
+        Playlist newPLaylist = creador.crearPlaylist(nombre);
+
+        // Modificamos su visibilidad porque su valor por defecto es privada
+        newPLaylist.setEsPublica(true);
+
+        // Agregarla a la lista
+        playlistsPublicas.add(newPLaylist);
+
+        // Retornar playList creada
+        return newPLaylist;
     }
 
     public ArrayList<Playlist> getPlaylistsPublicas() {
-        return new ArrayList<>();
+        return playlistsPublicas;
     }
 
     // Búsquedas

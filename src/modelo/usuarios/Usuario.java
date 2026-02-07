@@ -111,6 +111,7 @@ public abstract class Usuario {
     }
 
     public void seguirPlaylist(Playlist playlist){
+        playlist.incrementarSeguidores();
         playlistsSeguidas.add(playlist);
     }
 

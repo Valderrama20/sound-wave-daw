@@ -121,7 +121,7 @@ public class Playlist {
 
     // Metodos
     public void agregarContenido(Contenido contenidoNuevo) throws PlaylistLlenaException, ContenidoDuplicadoException {
-        if(maxContenidos >= contenidos.size()) throw new PlaylistLlenaException();
+        if(contenidos.size() >= maxContenidos) throw new PlaylistLlenaException();
 
         for (Contenido contenido : contenidos) {
             if(contenido.getId().equals(contenidoNuevo.getId())) throw  new ContenidoDuplicadoException();
@@ -152,10 +152,18 @@ public class Playlist {
         return false;
     }
 
-    public void  ordenarPor(CriterioOrden criterio) throws PlaylistVaciaException {
+    public void ordenarPor(CriterioOrden criterio) throws PlaylistVaciaException {
         if(estaVacia()) throw new PlaylistVaciaException();
-        // TODO logica fuerte
 
+        // Esto no cumple el principio de "Open Close", pero pasa el test :)
+        // TODO dar una vuelta luego
+
+        if(criterio.equals(CriterioOrden.POPULARIDAD)) {
+            contenidos.sort(Comparator.comparing(Contenido::getReproducciones).reversed());
+        }
+        else if(criterio.equals(CriterioOrden.DURACION)){
+            contenidos.sort(Comparator.comparing(Contenido::getDuracionSegundos));
+        }
     }
 
     public int getDuracionTotal() {
