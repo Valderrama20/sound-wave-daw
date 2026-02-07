@@ -6,15 +6,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import java.util.Random;
+
 import enums.CategoriaPodcast;
 import enums.GeneroMusical;
 import enums.TipoSuscripcion;
+import enums.TipoAnuncio;
 
 import excepciones.artista.AlbumCompletoException;
 import excepciones.artista.AlbumYaExisteException;
 import excepciones.artista.ArtistaNoVerificadoException;
 import excepciones.artista.LimiteEpisodiosException;
-import excepciones.contenido.ContenidoNoDisponibleException;
+
 import excepciones.contenido.DuracionInvalidaException;
 import excepciones.plataforma.ArtistaNoEncontradoException;
 import excepciones.plataforma.ContenidoNoEncontradoException;
@@ -59,6 +62,12 @@ public class Plataforma {
         this.creadores = new HashMap<>();
         this.albumes = new ArrayList<>();
         this.anuncios = new ArrayList<>();
+
+        // Agregar anuncios por defecto
+        anuncios.add(new Anuncio("Spotify", TipoAnuncio.AUDIO, 500.0));
+        anuncios.add(new Anuncio("Coca Cola", TipoAnuncio.VIDEO, 1000.0));
+        anuncios.add(new Anuncio("Amazon", TipoAnuncio.BANNER, 200.0));
+
         this.recomendador = new RecomendadorIA();
         this.totalAnunciosReproducidos = 0;
     }
@@ -82,10 +91,12 @@ public class Plataforma {
     }
 
     // Gestión de usuarios
-    public UsuarioPremium registrarUsuarioPremium(String nombre, String email, String password, TipoSuscripcion tipo) throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
+    public UsuarioPremium registrarUsuarioPremium(String nombre, String email, String password, TipoSuscripcion tipo)
+            throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
 
         // Verificar que el email no este uso
-        if(usuariosPorEmail.containsKey(email)) throw new UsuarioYaExisteException();
+        if (usuariosPorEmail.containsKey(email))
+            throw new UsuarioYaExisteException();
 
         // Crear el usuario
         UsuarioPremium newUser = new UsuarioPremium(nombre, email, password, tipo);
@@ -97,13 +108,16 @@ public class Plataforma {
         return newUser;
     }
 
-    public UsuarioPremium registrarUsuarioPremium(String nombre, String email, String password) throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
-        return registrarUsuarioPremium(nombre,email,password, TipoSuscripcion.PREMIUM);
+    public UsuarioPremium registrarUsuarioPremium(String nombre, String email, String password)
+            throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
+        return registrarUsuarioPremium(nombre, email, password, TipoSuscripcion.PREMIUM);
     }
 
-    public UsuarioGratuito registrarUsuarioGratuito(String nombre, String email, String password) throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
+    public UsuarioGratuito registrarUsuarioGratuito(String nombre, String email, String password)
+            throws UsuarioYaExisteException, EmailInvalidoException, PasswordDebilException {
         // Verificar que el email no este uso
-        if(usuariosPorEmail.containsKey(email)) throw new UsuarioYaExisteException();
+        if (usuariosPorEmail.containsKey(email))
+            throw new UsuarioYaExisteException();
 
         // Crear el usuario
         UsuarioGratuito newUser = new UsuarioGratuito(nombre, email, password);
@@ -120,9 +134,10 @@ public class Plataforma {
         ArrayList<UsuarioPremium> usuariosPremium = new ArrayList<>();
 
         // Recorrer y seleccionar solo los premium
-        // Utilizamos ".values()" para obtener solo los valores del hashMap y poder recorrerlos
-        for(Usuario usuario: usuariosPorEmail.values()) {
-            if(usuario instanceof UsuarioPremium usuarioPremium){
+        // Utilizamos ".values()" para obtener solo los valores del hashMap y poder
+        // recorrerlos
+        for (Usuario usuario : usuariosPorEmail.values()) {
+            if (usuario instanceof UsuarioPremium usuarioPremium) {
                 usuariosPremium.add(usuarioPremium);
             }
         }
@@ -136,8 +151,8 @@ public class Plataforma {
         ArrayList<UsuarioGratuito> usuariosGratuitos = new ArrayList<>();
 
         // Recorrer y seleccionar solo los gratuitos
-        for(Usuario usuario: usuariosPorEmail.values()) {
-            if(usuario instanceof UsuarioGratuito usuarioGratuito){
+        for (Usuario usuario : usuariosPorEmail.values()) {
+            if (usuario instanceof UsuarioGratuito usuarioGratuito) {
                 usuariosGratuitos.add(usuarioGratuito);
             }
         }
@@ -158,7 +173,7 @@ public class Plataforma {
     // Gestión de artistas
     public Artista registrarArtista(String nombreArtistico, String nombreReal, String paisOrigen, boolean verificado) {
         // Crear nuevo artista
-        Artista newArtista = new Artista(nombreArtistico,nombreReal, paisOrigen, verificado, null);
+        Artista newArtista = new Artista(nombreArtistico, nombreReal, paisOrigen, verificado, null);
 
         // Agregar el artista a la lista
         artistas.put(nombreArtistico, newArtista);
@@ -175,8 +190,8 @@ public class Plataforma {
         ArrayList<Artista> artistasVerificados = new ArrayList<>();
 
         // Recorrer el hashMap y obtener solo los artistas verificados
-        for(Artista artista: artistas.values()){
-            if(artista.isVerificado()) {
+        for (Artista artista : artistas.values()) {
+            if (artista.isVerificado()) {
                 artistasVerificados.add(artista);
             }
         }
@@ -190,8 +205,8 @@ public class Plataforma {
         ArrayList<Artista> artistasNoVerificados = new ArrayList<>();
 
         // Recorrer el hashMap y obtener solo los artistas no verificados
-        for(Artista artista: artistas.values()){
-            if(!artista.isVerificado()) {
+        for (Artista artista : artistas.values()) {
+            if (!artista.isVerificado()) {
                 artistasNoVerificados.add(artista);
             }
         }
@@ -211,7 +226,8 @@ public class Plataforma {
     }
 
     // Gestión de álbumes
-    public Album crearAlbum(Artista artista, String titulo, Date fecha) throws ArtistaNoVerificadoException, AlbumYaExisteException {
+    public Album crearAlbum(Artista artista, String titulo, Date fecha)
+            throws ArtistaNoVerificadoException, AlbumYaExisteException {
         // Crear un nuevo album
         Album newAlbum = artista.crearAlbum(titulo, fecha);
 
@@ -227,7 +243,8 @@ public class Plataforma {
     }
 
     // Gestión de canciones
-    public Cancion crearCancion(String titulo, int duracion, Artista artista, GeneroMusical genero) throws DuracionInvalidaException {
+    public Cancion crearCancion(String titulo, int duracion, Artista artista, GeneroMusical genero)
+            throws DuracionInvalidaException {
         // Crear cancion y retornarla
         Cancion newCancion = new Cancion(titulo, duracion, artista, genero);
 
@@ -238,7 +255,8 @@ public class Plataforma {
         return newCancion;
     }
 
-    public Cancion crearCancionEnAlbum(String titulo, int duracion, Artista artista, GeneroMusical genero, Album album) throws DuracionInvalidaException, AlbumCompletoException {
+    public Cancion crearCancionEnAlbum(String titulo, int duracion, Artista artista, GeneroMusical genero, Album album)
+            throws DuracionInvalidaException, AlbumCompletoException {
         return null;
     }
 
@@ -276,7 +294,8 @@ public class Plataforma {
     public void registrarCreador(Creador creador) {
     }
 
-    public Podcast crearPodcast(String titulo, int duracion, Creador creador, int numEpisodio, int temporada, CategoriaPodcast categoria) throws DuracionInvalidaException, LimiteEpisodiosException {
+    public Podcast crearPodcast(String titulo, int duracion, Creador creador, int numEpisodio, int temporada,
+            CategoriaPodcast categoria) throws DuracionInvalidaException, LimiteEpisodiosException {
         // Crear nuevo podcast
         Podcast newPodcast = new Podcast(titulo, duracion, creador, numEpisodio, temporada, categoria);
 
@@ -336,13 +355,14 @@ public class Plataforma {
         for (Contenido contenido : catalogo) {
 
             // Trasformar el título y termino a minúsculas para búsqueda insensitive
-            if(contenido.getTitulo().toLowerCase().contains(termino.toLowerCase())){
+            if (contenido.getTitulo().toLowerCase().contains(termino.toLowerCase())) {
                 contenidoEncontrado.add(contenido);
             }
         }
 
         // Tirar una excecion
-        if(contenidoEncontrado.isEmpty()) throw new ContenidoNoEncontradoException();
+        if (contenidoEncontrado.isEmpty())
+            throw new ContenidoNoEncontradoException();
 
         // Retornar el resultado de la busqueda
         return contenidoEncontrado;
@@ -352,15 +372,17 @@ public class Plataforma {
         // Crear nuevo array list para las canciones con el género indicado
         ArrayList<Cancion> cancionesEncontrado = new ArrayList<>();
 
-        // obtener las canciones y luego recorrerlas para seleccionar las del genero indicado
+        // obtener las canciones y luego recorrerlas para seleccionar las del genero
+        // indicado
         for (Cancion cancion : getCanciones()) {
-            if(cancion.getGenero().equals(genero)){
+            if (cancion.getGenero().equals(genero)) {
                 cancionesEncontrado.add(cancion);
             }
         }
 
         // Si no se encuentra nada, tirar una excepcion
-        if(cancionesEncontrado.isEmpty()) throw new ContenidoNoEncontradoException();
+        if (cancionesEncontrado.isEmpty())
+            throw new ContenidoNoEncontradoException();
 
         // Retornar el resultado de la busqueda
         return cancionesEncontrado;
@@ -371,8 +393,8 @@ public class Plataforma {
         ArrayList<Podcast> podcastsEncontrados = new ArrayList<>();
 
         // Obtener lod podcasts y obtener los que tengan la categoria buscada
-        for (Podcast podcast : getPodcasts()){
-            if(podcast.getCategoria().equals(categoria)){
+        for (Podcast podcast : getPodcasts()) {
+            if (podcast.getCategoria().equals(categoria)) {
                 podcastsEncontrados.add(podcast);
             }
         }
@@ -382,21 +404,22 @@ public class Plataforma {
     }
 
     public ArrayList<Contenido> obtenerTopContenidos(int cantidad) {
-//        // Crear una copia del array list para no mutar el original
-//        ArrayList<Contenido> copiaContenido = new ArrayList<>(catalogo);
-//
-//        // Ordenamos por mayor cantidad de reproducciones
-//        copiaContenido.sort(Comparator.comparing(Contenido::getReproducciones).reversed());
-//
-//        // devolvemos solo la cantidad indicada
-//        return new ArrayList<>(copiaContenido.subList(0, Math.min(cantidad, copiaContenido.size())));
+        // // Crear una copia del array list para no mutar el original
+        // ArrayList<Contenido> copiaContenido = new ArrayList<>(catalogo);
+        //
+        // // Ordenamos por mayor cantidad de reproducciones
+        // copiaContenido.sort(Comparator.comparing(Contenido::getReproducciones).reversed());
+        //
+        // // devolvemos solo la cantidad indicada
+        // return new ArrayList<>(copiaContenido.subList(0, Math.min(cantidad,
+        // copiaContenido.size())));
 
         // Aplicamos la misma logica pero utilizando streams
         // Esto transforma el array list en un flujo se datos
         // luego indicamos que los vamos a ordenar
         // después indicamos la cantidad de elementos que queremos
         // por último metemos los elementos en nuevo array list
-        return  catalogo.stream()
+        return catalogo.stream()
                 .sorted(Comparator.comparing(Contenido::getReproducciones).reversed())
                 .limit(cantidad)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -404,16 +427,15 @@ public class Plataforma {
 
     // Anuncios
     public Anuncio obtenerAnuncioAleatorio() {
-        return null;
+        if (anuncios.isEmpty())
+            return null;
+        return anuncios.get(new Random().nextInt(anuncios.size()));
     }
 
     public void incrementarAnunciosReproducidos() {
     }
 
     // Estadísticas
-    public String obtenerEstadisticasGenerales() {
-        return "";
-    }
 
     // Getters básicos
     public String getNombre() {
@@ -441,15 +463,27 @@ public class Plataforma {
     }
 
     public int getTotalUsuarios() {
-        return 0;
+        return usuariosPorEmail.size();
     }
 
     public int getTotalContenido() {
-        return 0;
+        return catalogo.size();
     }
 
     public int getTotalAnunciosReproducidos() {
         return totalAnunciosReproducidos;
+    }
+
+    // Estadísticas
+    public String obtenerEstadisticasGenerales() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Estadísticas de la Plataforma ").append(nombre).append(":\n");
+        sb.append("Total de Usuarios: ").append(getTotalUsuarios()).append("\n");
+        sb.append("Total de Contenido: ").append(getTotalContenido()).append("\n");
+        sb.append("Total de Artistas: ").append(artistas.size()).append("\n");
+        sb.append("Total de Creadores: ").append(creadores.size()).append("\n");
+        sb.append("Total de Anuncios Reproducidos: ").append(totalAnunciosReproducidos).append("\n");
+        return sb.toString();
     }
 
     @Override
