@@ -1,8 +1,10 @@
 package modelo.plataforma;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import enums.CategoriaPodcast;
 import enums.GeneroMusical;
@@ -199,7 +201,13 @@ public class Plataforma {
     }
 
     public Artista buscarArtista(String nombre) throws ArtistaNoEncontradoException {
-        return null;
+
+        return artistas
+                .values()
+                .stream()
+                .filter(a -> a.getNombreArtistico().toLowerCase().contains(nombre.toLowerCase()))
+                .findFirst()
+                .orElseThrow(ArtistaNoEncontradoException::new);
     }
 
     // Gestión de álbumes
@@ -321,19 +329,77 @@ public class Plataforma {
 
     // Búsquedas
     public ArrayList<Contenido> buscarContenido(String termino) throws ContenidoNoEncontradoException {
-        return new ArrayList<>();
+        // Crear nuevo array list para el contenido de conincida
+        ArrayList<Contenido> contenidoEncontrado = new ArrayList<>();
+
+        // Recorrer el contenido y obtener solo los que tengan coincidencias
+        for (Contenido contenido : catalogo) {
+
+            // Trasformar el título y termino a minúsculas para búsqueda insensitive
+            if(contenido.getTitulo().toLowerCase().contains(termino.toLowerCase())){
+                contenidoEncontrado.add(contenido);
+            }
+        }
+
+        // Tirar una excecion
+        if(contenidoEncontrado.isEmpty()) throw new ContenidoNoEncontradoException();
+
+        // Retornar el resultado de la busqueda
+        return contenidoEncontrado;
     }
 
     public ArrayList<Cancion> buscarPorGenero(GeneroMusical genero) throws ContenidoNoEncontradoException {
-        return new ArrayList<>();
+        // Crear nuevo array list para las canciones con el género indicado
+        ArrayList<Cancion> cancionesEncontrado = new ArrayList<>();
+
+        // obtener las canciones y luego recorrerlas para seleccionar las del genero indicado
+        for (Cancion cancion : getCanciones()) {
+            if(cancion.getGenero().equals(genero)){
+                cancionesEncontrado.add(cancion);
+            }
+        }
+
+        // Si no se encuentra nada, tirar una excepcion
+        if(cancionesEncontrado.isEmpty()) throw new ContenidoNoEncontradoException();
+
+        // Retornar el resultado de la busqueda
+        return cancionesEncontrado;
     }
 
     public ArrayList<Podcast> buscarPorCategoria(CategoriaPodcast categoria) throws ContenidoNoEncontradoException {
-        return new ArrayList<>();
+        // Crear array list para los podcasts que coincidan
+        ArrayList<Podcast> podcastsEncontrados = new ArrayList<>();
+
+        // Obtener lod podcasts y obtener los que tengan la categoria buscada
+        for (Podcast podcast : getPodcasts()){
+            if(podcast.getCategoria().equals(categoria)){
+                podcastsEncontrados.add(podcast);
+            }
+        }
+
+        // Retornar los resultados
+        return podcastsEncontrados;
     }
 
     public ArrayList<Contenido> obtenerTopContenidos(int cantidad) {
-        return new ArrayList<>();
+//        // Crear una copia del array list para no mutar el original
+//        ArrayList<Contenido> copiaContenido = new ArrayList<>(catalogo);
+//
+//        // Ordenamos por mayor cantidad de reproducciones
+//        copiaContenido.sort(Comparator.comparing(Contenido::getReproducciones).reversed());
+//
+//        // devolvemos solo la cantidad indicada
+//        return new ArrayList<>(copiaContenido.subList(0, Math.min(cantidad, copiaContenido.size())));
+
+        // Aplicamos la misma logica pero utilizando streams
+        // Esto transforma el array list en un flujo se datos
+        // luego indicamos que los vamos a ordenar
+        // después indicamos la cantidad de elementos que queremos
+        // por último metemos los elementos en nuevo array list
+        return  catalogo.stream()
+                .sorted(Comparator.comparing(Contenido::getReproducciones).reversed())
+                .limit(cantidad)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     // Anuncios
