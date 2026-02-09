@@ -8,6 +8,9 @@ import enums.GeneroMusical;
 
 import java.util.*;
 
+/**
+ * Representa un álbum musical publicado por un artista, que contiene una colección de canciones.
+ */
 public class Album {
 
     // Atributos
@@ -22,7 +25,14 @@ public class Album {
 
     private static final int MAX_CANCIONES = 20;
 
-    // Constructor
+    /**
+     * Crea una instancia de Album con información completa.
+     * @param titulo Título del álbum.
+     * @param artista Artista propietario.
+     * @param fechaLanzamiento Fecha de lanzamiento.
+     * @param discografica Sello discográfico.
+     * @param tipoAlbum Tipo de lanzamiento (LP, EP, Single).
+     */
     public Album(String titulo, Artista artista, Date fechaLanzamiento, String discografica, String tipoAlbum) {
         this.id = UUID.randomUUID().toString();
         this.titulo = titulo;
@@ -33,6 +43,12 @@ public class Album {
         this.tipoAlbum = tipoAlbum;
     }
 
+    /**
+     * Constructor simplificado para albums.
+     * @param titulo Título del álbum.
+     * @param artista Artista creador del álbum.
+     * @param fechaLanzamiento Fecha de publicación.
+     */
     public Album(String titulo, Artista artista, Date fechaLanzamiento) {
         this(titulo, artista, fechaLanzamiento, null, null);
     }
@@ -107,6 +123,17 @@ public class Album {
     }
 
     // Metodos
+    /**
+     * Crea y añade una nueva canción al álbum.
+     * @param titulo Título de la canción.
+     * @param duracionSegundos Duración en segundos.
+     * @param genero Género musical.
+     * @param letra Letra de la canción.
+     * @param explicit Indica si tiene contenido explícito.
+     * @return La canción creada.
+     * @throws AlbumCompletoException Si el álbum ya alcanzó el máximo de canciones.
+     * @throws DuracionInvalidaException Si la duración es inválida.
+     */
     public Cancion crearCancion(String titulo, int duracionSegundos, GeneroMusical genero, String letra, boolean explicit) throws AlbumCompletoException, DuracionInvalidaException {
         if(MAX_CANCIONES <= canciones.size()) throw new AlbumCompletoException();
 
@@ -119,10 +146,24 @@ public class Album {
         return cancion;
     }
 
+    /**
+     * Crea y añade una canción con información básica.
+     * @param titulo Título de la canción.
+     * @param duracionSegundos Duración.
+     * @param genero Género musical.
+     * @return La canción creada.
+     * @throws AlbumCompletoException Si el álbum está lleno.
+     * @throws DuracionInvalidaException Si la duración no es válida.
+     */
     public Cancion crearCancion(String titulo, int duracionSegundos, GeneroMusical genero) throws AlbumCompletoException, DuracionInvalidaException {
         return crearCancion(titulo, duracionSegundos, genero, null, false);
     }
-
+    
+    /**
+     * Elimina una canción del álbum por su posición.
+     * @param posicion Posición en la lista (1-based).
+     * @throws CancionNoEncontradaException Si la posición no es válida.
+     */
     public void eliminarCancion(int posicion) throws CancionNoEncontradaException {
 
         if(canciones.size() <= posicion || posicion <= 0 ) throw new CancionNoEncontradaException();
@@ -130,10 +171,19 @@ public class Album {
         canciones.remove(posicion);
     }
 
+    /**
+     * Elimina una canción específica del álbum.
+     * @param cancion Objeto Cancion a eliminar.
+     * @throws CancionNoEncontradaException Si la canción no está en el álbum.
+     */
     public void eliminarCancion(Cancion cancion) throws CancionNoEncontradaException {
         if(!canciones.remove(cancion)) throw new CancionNoEncontradaException();
     }
 
+    /**
+     * Calcula la duración total del álbum sumando la duración de todas sus canciones.
+     * @return Duración total en segundos.
+     */
     public int getDuracionTotal() {
         int duracionTotalAlbum = 0;
 
@@ -144,29 +194,50 @@ public class Album {
         return duracionTotalAlbum;
     }
 
+    /**
+     * Devuelve la duración total formateada en horas:minutos:segundos.
+     * @return String con la duración formateada.
+     */
     public String getDuracionTotalFormateada() {
         int duracionTotal = getDuracionTotal();
 
         return duracionTotal / 3600 + ":" + duracionTotal / 60 + ":" + duracionTotal % 60;
     }
 
+    /**
+     * Obtiene el número de canciones del álbum.
+     * @return Cantidad de canciones.
+     */
     public int getNumCanciones() {
         return canciones.size();
     }
 
+    /**
+     * Ordena las canciones del álbum por popularidad (reproducciones) de mayor a menor.
+     */
     public void ordenarPorPopularidad() {
         canciones.sort(Comparator.comparing(Cancion::getReproducciones).reversed());
     }
 
+    /**
+     * Obtiene una canción específica dada su posición.
+     * @param posicion Posición en la lista de canciones (1-based).
+     * @return La canción encontrada.
+     * @throws CancionNoEncontradaException Si la posición está fuera de rango.
+     */
     public Cancion getCancion(int posicion) throws CancionNoEncontradaException {
         if(canciones.size() <= posicion) throw new CancionNoEncontradaException();
 
-        // Por alguna razon tengo que poner menos una para obtener la primera cancion
-        // el tes me pìde la posicion 1, pero el array list comienza por 0, por eso rompe
+        // Por alguna razon tengo que poner menos uno para obtener la primera cancion
+        // el tes me pìde la posicion 1, pero el array list comienza en 0, por eso rompe
         // el test
         return canciones.get(posicion-1);
     }
 
+    /**
+     * Calcula el total de reproducciones acumuladas de todas las canciones del álbum.
+     * @return Total de reproducciones.
+     */
     public int getTotalReproducciones() {
         int reproduccionesTotalAlbum = 0;
 

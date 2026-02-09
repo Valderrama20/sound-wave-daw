@@ -1,5 +1,8 @@
 package enums;
 
+/**
+ * Enum que categoriza los podcasts disponibles en la plataforma.
+ */
 public enum CategoriaPodcast {
     TECNOLOGIA("Tecnología", "Podcasts sobre tecnología e innovación"),
     DEPORTES("Deportes", "Podcasts deportivos"),
@@ -14,17 +17,14 @@ public enum CategoriaPodcast {
     POLITICA("Política", "Podcasts de política y actualidad"),
     CULTURA("Cultura", "Podcasts culturales");
 
-    // Atributos
     private final String nombre;
     private final String descripcion;
 
-    // Constructor
     CategoriaPodcast(String nombre, String descripcion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
 
-    // Metodos
     public String getNombre() {
         return nombre;
     }

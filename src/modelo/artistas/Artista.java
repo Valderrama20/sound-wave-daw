@@ -8,6 +8,9 @@ import excepciones.artista.ArtistaNoVerificadoException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Representa a un artista o banda en la plataforma, capaz de publicar álbumes y canciones.
+ */
 public class Artista {
 
     // Atributos
@@ -21,7 +24,14 @@ public class Artista {
     private boolean verificado;
     private String biografia;
 
-    // Constructor
+    /**
+     * Constructor completo para crear un artista.
+     * @param nombreArtistico Nombre público del artista.
+     * @param nombreReal Nombre real de la persona o grupo.
+     * @param paisOrigen País de procedencia.
+     * @param verificado Estado de verificación en la plataforma.
+     * @param biografia Descripción biográfica.
+     */
     public Artista(String nombreArtistico, String nombreReal, String paisOrigen, boolean verificado, String biografia) {
         this.id = UUID.randomUUID().toString();
         this.nombreArtistico = nombreArtistico;
@@ -33,6 +43,12 @@ public class Artista {
         this.biografia = biografia;
     }
 
+    /**
+     * Crea un artista nuevo sin verificar.
+     * @param nombreArtistico Nombre público.
+     * @param nombreReal Nombre real.
+     * @param paisOrigen País de origen.
+     */
     public Artista(String nombreArtistico, String nombreReal, String paisOrigen) {
         this(nombreArtistico, nombreReal, paisOrigen, false, null);
     }
@@ -111,10 +127,22 @@ public class Artista {
     }
 
     // Metodos
+    /**
+     * Publica una canción independiente.
+     * @param cancion Canción a publicar.
+     */
     public void publicarCancion(Cancion cancion){
         addCancion(cancion);
     }
 
+    /**
+     * Crea un nuevo álbum para el artista.
+     * @param titulo Título del álbum.
+     * @param fecha Fecha de publicación.
+     * @return El álbum creado.
+     * @throws ArtistaNoVerificadoException Si el artista no está verificado.
+     * @throws AlbumYaExisteException Si ya existe un álbum con ese nombre.
+     */
     public Album crearAlbum(String titulo, Date fecha) throws ArtistaNoVerificadoException, AlbumYaExisteException {
         if(!verificado) throw new ArtistaNoVerificadoException();
 
@@ -127,6 +155,11 @@ public class Artista {
         return newAlbum;
     };
 
+    /**
+     * Obtiene las canciones más populares del artista.
+     * @param cantidad Número de canciones a recuperar.
+     * @return Lista de canciones ordenadas por reproducciones.
+     */
     public ArrayList<Cancion> obtenerTopCanciones(int cantidad) {
         return discografia
                 .stream()
@@ -135,6 +168,10 @@ public class Artista {
                 .collect(Collectors.toCollection(ArrayList::new));
     };
 
+    /**
+     * Calcula el promedio de reproducciones de toda la discografía.
+     * @return Promedio de reproducciones.
+     */
     public double calcularPromedioReproducciones(){
         return (double) getTotalReproducciones() / discografia.size();
     };

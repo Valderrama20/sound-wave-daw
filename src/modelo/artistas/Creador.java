@@ -10,6 +10,9 @@ import utilidades.EstadisticasCreador;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Representa a un creador de contenido de podcasts.
+ */
 public class Creador {
 
     // Atributos
@@ -24,7 +27,12 @@ public class Creador {
 
     private static final int MAX_EPISODIOS = 500;
 
-    // Constructor
+    /**
+     * Constructor completo para un creador.
+     * @param nombreCanal Nombre del canal de podcast.
+     * @param nombre Nombre real del creador.
+     * @param descripcion Descripción del canal.
+     */
     public Creador(String nombreCanal, String nombre, String descripcion) {
         this.id = UUID.randomUUID().toString();
         this.nombreCanal = nombreCanal;
@@ -32,6 +40,11 @@ public class Creador {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Constructor simplificado.
+     * @param nombreCanal Nombre del canal.
+     * @param nombre Nombre del creador.
+     */
     public Creador(String nombreCanal, String nombre) {
         this(nombreCanal, nombre, null);
     }
@@ -94,24 +107,47 @@ public class Creador {
     }
 
     // Metodos
+    /**
+     * Publica un nuevo episodio de podcast en el canal.
+     * @param episodio Episodio a publicar.
+     * @throws LimiteEpisodiosException Si se ha alcanzado el límite de episodios.
+     */
     public void publicarPodcast(Podcast episodio) throws LimiteEpisodiosException {
         if(episodios.size() >= MAX_EPISODIOS) throw new LimiteEpisodiosException();
 
         episodios.add(episodio);
     }
 
+    /**
+     * Genera un reporte de estadísticas del creador.
+     * @return Objeto con las estadísticas calculadas.
+     */
     public EstadisticasCreador obtenerEstadisticas() {
         return new EstadisticasCreador(this);
     }
 
+    /**
+     * Añade o actualiza una red social del creador.
+     * @param red Nombre de la red social (ej: "twitter").
+     * @param usuario Nombre de usuario en dicha red.
+     */
     public void agregarRedSocial(String red, String usuario) {
         redesSociales.put(red.toLowerCase(), usuario);
     }
 
+    /**
+     * Calcula el promedio de reproducciones por episodio.
+     * @return Promedio de reproducciones.
+     */
     public double calcularPromedioReproducciones() {
         return (double) getTotalReproducciones() / episodios.size();
     }
 
+    /**
+     * Elimina un episodio basado en su ID.
+     * @param idEpisodio ID del episodio a borrar.
+     * @throws EpisodioNoEncontradoException Si no se encuentra el episodio.
+     */
     public void eliminarEpisodio(String idEpisodio) throws EpisodioNoEncontradoException {
 
         for(Podcast episodio: episodios) {
@@ -124,6 +160,10 @@ public class Creador {
         throw new EpisodioNoEncontradoException();
     }
 
+    /**
+     * Calcula el total de reproducciones acumuladas en todos los episodios.
+     * @return Total de reproducciones.
+     */
     public int getTotalReproducciones() {
         int totalReproduccionesEpisodios = 0;
 
@@ -134,10 +174,18 @@ public class Creador {
         return totalReproduccionesEpisodios;
     }
 
+    /**
+     * Incrementa en uno el contador de suscriptores.
+     */
     public void incrementarSuscriptores(){
         suscriptores++;
     }
 
+    /**
+     * Obtiene los episodios más populares del creador.
+     * @param cantidad Número de episodios a recuperar.
+     * @return Lista de episodios ordenados por reproducciones.
+     */
     public ArrayList<Podcast> obtenerTopEpisodios(int cantidad) {
         return episodios
                 .stream()
@@ -146,6 +194,10 @@ public class Creador {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Obtiene el número de la última temporada publicada.
+     * @return Número de temporada.
+     */
     public int getUltimaTemporada() {
         return episodios.getLast().getTemporada();
     }

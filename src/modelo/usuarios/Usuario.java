@@ -15,6 +15,10 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Clase abstracta base que representa a un usuario de la plataforma.
+ * Contiene la información básica, credenciales y gestión de playlists y likes.
+ */
 public abstract class Usuario {
 
     // Atributos
@@ -29,12 +33,19 @@ public abstract class Usuario {
     private ArrayList<Playlist> playlistsSeguidas = new ArrayList<>();
     private ArrayList<Contenido> contenidosLiked = new ArrayList<>();
 
-    // Constructor
+    /**
+     * Constructor principal de Usuario.
+     * @param nombre Nombre del usuario.
+     * @param email Correo electrónico (debe ser válido).
+     * @param password Contraseña (debe cumplir requisitos de seguridad).
+     * @param suscripcion Tipo de suscripción inicial.
+     * @throws EmailInvalidoException Si el email tiene formato incorrecto.
+     * @throws PasswordDebilException Si password es insegura.
+     */
     public Usuario(String nombre, String email, String password, TipoSuscripcion suscripcion) throws EmailInvalidoException, PasswordDebilException {
         validarEmail(email);
         validarPassword(password);
 
-        // TODO validas usuario y contraseña
         this.id = UUID.randomUUID().toString();
         this.nombre = nombre;
         this.email = email;
@@ -93,6 +104,10 @@ public abstract class Usuario {
         return fechaRegisto;
     }
 
+    /**
+     * Devuelve las playlists que sigue el usuario.
+     * @return Lista de playlists seguidas.
+     */
     public ArrayList<Playlist> getPlaylistsSeguidas() {
         return new ArrayList<>(playlistsSeguidas);
     }
@@ -102,32 +117,67 @@ public abstract class Usuario {
     }
 
     // Metodos
+    /**
+     * Método abstracto para reproducir contenido.
+     * La implementación varía según si es Premium o Gratuito.
+     * @param contenido Contenido a reproducir.
+     * @throws ContenidoNoDisponibleException Contenido no válido.
+     * @throws LimiteDiarioAlcanzadoException Si usuario gratuito excede límite.
+     * @throws AnuncioRequeridoException Si usuario gratuito debe ver anuncio.
+     */
     public abstract void reproducir(Contenido contenido) throws ContenidoNoDisponibleException, LimiteDiarioAlcanzadoException, AnuncioRequeridoException;
 
+    /**
+     * Crea una nueva playlist propia.
+     * @param nombre Nombre de la lista.
+     * @return Playlist creada.
+     */
     public Playlist crearPlaylist(String nombre){
         Playlist newPLaylist = new Playlist(nombre, this);
         misPlaylist.add(newPLaylist);
         return newPLaylist;
     }
 
+    /**
+     * Sigue una playlist pública.
+     * @param playlist Playlist a seguir.
+     */
     public void seguirPlaylist(Playlist playlist){
         playlist.incrementarSeguidores();
         playlistsSeguidas.add(playlist);
     }
 
+    /**
+     * Deja de seguir una playlist.
+     * @param playlist Playlist a dejar.
+     */
     public void dejarDeSeguirPlaylist(Playlist playlist){
         playlistsSeguidas.remove(playlist);
     }
 
+    /**
+     * Da 'me gusta' a un contenido.
+     * @param contenido Contenido.
+     */
     public void darLike(Contenido contenido){
         contenido.agregarLike();
         contenidosLiked.add(contenido);
     }
 
+    /**
+     * Quita 'me gusta' a un contenido.
+     * @param contenido Contenido.
+     */
     public void quitarLike(Contenido contenido) {
         contenidosLiked.remove(contenido);
     }
 
+    /**
+     * Valida formato de email.
+     * @param email Email a comprobar.
+     * @return true si es válido.
+     * @throws EmailInvalidoException Si el formato es incorrecto.
+     */
     public boolean validarEmail(String email) throws EmailInvalidoException{
         String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
 
@@ -138,6 +188,12 @@ public abstract class Usuario {
         return true;
     }
 
+    /**
+     * Valida seguridad de contraseña (mínimo 8 caracteres, números, etc).
+     * @param password Password a comprobar.
+     * @return true si es válida.
+     * @throws PasswordDebilException Si es muy débil.
+     */
     public boolean validarPassword(String password) throws PasswordDebilException{
         if (password == null || password.isEmpty()) {
             throw new PasswordDebilException("La contraseña está vacía");
@@ -159,13 +215,25 @@ public abstract class Usuario {
         return true;
     }
 
+    /**
+     * Agrega un contenido al historial de reproducción.
+     * @param contenido Contenido reproducido.
+     */
     public void agregarAlHistorial(Contenido contenido){
         historial.add(contenido);
     }
+
+    /**
+     * Limpia completamente el historial de reproducción.
+     */
     public void limpiarHistorial() {
         historial.clear();
     }
 
+    /**
+     * Verifica si el usuario tiene suscripción Premium.
+     * @return true si es Premium.
+     */
     public boolean esPremium() {
         return suscripcion.equals(TipoSuscripcion.PREMIUM);
     }

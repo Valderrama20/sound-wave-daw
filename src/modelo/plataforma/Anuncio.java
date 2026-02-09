@@ -5,6 +5,10 @@ import enums.TipoAnuncio;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Representa un anuncio publicitario dentro de la plataforma.
+ * Gestiona el presupuesto, impresiones y estado de actividad de una campaña publicitaria.
+ */
 public class Anuncio {
 
     // Atributos
@@ -17,7 +21,13 @@ public class Anuncio {
     private double presupuesto;
     private boolean activo;
 
-    // Constructor
+    /**
+     * Constructor completo para crear un anuncio.
+     * @param empresa Nombre de la empresa anunciante.
+     * @param tipo Tipo de anuncio (Audio, Banner, Video).
+     * @param presupuesto Presupuesto asignado a la campaña.
+     * @param audioURL URL del archivo de audio (si aplica).
+     */
     public Anuncio(String empresa, TipoAnuncio tipo, double presupuesto, String audioURL) {
         this.id = UUID.randomUUID().toString();
         this.empresa = empresa;
@@ -26,6 +36,12 @@ public class Anuncio {
         this.audioURL = audioURL;
     }
 
+    /**
+     * Constructor simplificado para anuncios sin audio.
+     * @param empresa Nombre de la empresa.
+     * @param tipo Tipo de anuncio.
+     * @param presupuesto Presupuesto inicial.
+     */
     public Anuncio(String empresa, TipoAnuncio tipo, double presupuesto) {
         this(empresa, tipo, presupuesto, null);
     }
@@ -88,12 +104,19 @@ public class Anuncio {
     }
 
     // Metodos
+    /**
+     * Simula la reproducción del anuncio si está activo.
+     */
     public void reproducir() {
         if(isActivo()) {
             System.out.println("Reproduciendo anuncio...");
         }
     }
 
+    /**
+     * Registra una visualización del anuncio y descuenta el costo del presupuesto.
+     * Desactiva el anuncio si el presupuesto se agota.
+     */
     public void registrarImpresion() {
         impresiones++;
         presupuesto -= tipo.getCostoPorImpresion();
@@ -103,26 +126,48 @@ public class Anuncio {
         }
     }
 
+    /**
+     * Obtiene el costo unitario por cada impresión según el tipo de anuncio.
+     * @return Costo por impresión.
+     */
     public double calcularCostoPorImpresion() {
         return  tipo.getCostoPorImpresion();
     }
 
+    /**
+     * Calcula el costo total gastado hasta el momento basándose en las impresiones.
+     * @return Costo total acumulado.
+     */
     public double calcularCostoTotal() {
         return impresiones * tipo.getCostoPorImpresion();
     }
 
+    /**
+     * Estima cuántas impresiones más se pueden realizar con el presupuesto restante.
+     * @return Número de impresiones restantes.
+     */
     public int calcularImpresionesRestantes() {
         return (int) (presupuesto / tipo.getCostoPorImpresion());
     }
 
+    /**
+     * Desactiva manualmente el anuncio.
+     */
     public void desactivar() {
         setActivo(false);
     }
 
+    /**
+     * Activa manualmente el anuncio.
+     */
     public void activar() {
         setActivo(true);
     }
 
+    /**
+     * Verifica si el anuncio cumple las condiciones para ser mostrado (activo y con presupuesto).
+     * @return true si puede mostrarse.
+     */
     public boolean puedeMostrarse() {
         return activo && presupuesto > 0;
     }

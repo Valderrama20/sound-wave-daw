@@ -35,16 +35,15 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
     private boolean descargado = false;
 
     /**
-     * Constructor principal de la clase Cancion.
-     *
-     * @param titulo Título de la canción
-     * @param duracionSegundos Duración en segundos
-     * @param artista Artista principal
-     * @param genero Género musical
-     * @param letra Letra de la cancion
-     * @param explicit Es contenido explícito
+     * Construye una canción con todos sus atributos.
+     * @param titulo Título de la canción.
+     * @param duracionSegundos Duración en segundos.
+     * @param artista Artista intérprete.
+     * @param genero Género musical.
+     * @param letra Letra completa de la canción.
+     * @param explicit Indicador de contenido explícito.
+     * @throws DuracionInvalidaException Si la duración no es válida.
      */
-
     public Cancion(String titulo, int duracionSegundos, Artista artista, GeneroMusical genero, String letra, boolean explicit ) throws DuracionInvalidaException {
         super(titulo, duracionSegundos);
         this.artista = artista;
@@ -55,7 +54,12 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
 
     }
     /**
-     * Constructor para crear una canción sin letra y contenido explícito.
+     * Crea una canción con configuración estándar (sin letra, no explícita).
+     * @param titulo Título de la canción.
+     * @param duracionSegundos Duración.
+     * @param artista Artista.
+     * @param genero Género.
+     * @throws DuracionInvalidaException Si la duración es inválida.
      */
     public Cancion(String titulo, int duracionSegundos, Artista artista, GeneroMusical genero) throws DuracionInvalidaException {
         this(titulo, duracionSegundos, artista, genero, null, false);
@@ -136,6 +140,10 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
     }
 
     // Metodos
+    /**
+     * Inicia la reproducción de la canción si está disponible.
+     * @throws ContenidoNoDisponibleException Si la canción no está disponible.
+     */
     @Override
     public void reproducir() throws ContenidoNoDisponibleException {
        if(!disponible) throw new ContenidoNoDisponibleException();
@@ -144,6 +152,9 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
        play();
     }
 
+    /**
+     * Reanuda o inicia la reproducción.
+     */
     @Override
     public void play() {
         reproduciendo = true;
@@ -166,6 +177,12 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
         return getDuracionSegundos();
     }
 
+    /**
+     * Marca la canción como descargada.
+     * @return true si se descargó correctamente.
+     * @throws LimiteDescargasException Si se superan los límites de descarga.
+     * @throws ContenidoYaDescargadoException Si ya estaba descargada.
+     */
     @Override
     public boolean descargar() throws LimiteDescargasException, ContenidoYaDescargadoException {
         if (descargado) throw new ContenidoYaDescargadoException();
@@ -178,12 +195,18 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
         return true;
     }
 
+    /**
+     * Calcula el espacio aproximado requerido de almacenamiento.
+     */
     @Override
     public int espacioRequerido() {
-        // TODO
         return 0;
     }
 
+    /**
+     * Genera un código ISRC único para la canción.
+     * @return Código ISRC generado.
+     */
     public String generarISRC() {
         String year = String.valueOf(Year.now().getValue()).substring(2);
 
@@ -195,7 +218,9 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
     }
 
     /**
-     * Devuelve la letra de la canción.
+     * Obtiene la letra de la canción si existe.
+     * @return Texto de la letra.
+     * @throws LetraNoDisponibleException Si no hay letra asociada.
      */
     public  String obtenerLetra() throws LetraNoDisponibleException {
         if(letra == null || letra.isEmpty()) throw new LetraNoDisponibleException();
@@ -204,21 +229,25 @@ public class Cancion extends Contenido implements Reproducible, Descargable {
     }
 
     /**
-     * Indica si la canción es explícita.
+     * Verifica si el contenido es explícito.
+     * @return true si es explícito.
      */
     public boolean esExplicit(){
         return explicit;
     }
 
     /**
-     * Cambia el género musical de la canción.
-     *
-     * @param nuevoGenero Nuevo género
+     * Actualiza el género musical de la canción.
+     * @param nuevoGenero Nuevo género a establecer.
      */
     public void cambiarGenero(GeneroMusical nuevoGenero){
         this.setGenero(genero);
     }
 
+    /**
+     * Verifica que la URL del archivo de audio sea válida.
+     * @throws ArchivoAudioNoEncontradoException Si la URL es nula o vacía.
+     */
     public void validarAudioURL() throws ArchivoAudioNoEncontradoException {
          if(audioURL == null) throw new ArchivoAudioNoEncontradoException();
     }

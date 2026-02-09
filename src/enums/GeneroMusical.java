@@ -1,5 +1,8 @@
 package enums;
 
+/**
+ * Enum que representa los géneros musicales disponibles para clasificar canciones.
+ */
 public enum GeneroMusical {
     POP("Pop", "Música popular contemporánea"),
     ROCK("Rock", "Rock clásico y moderno"),
@@ -16,17 +19,14 @@ public enum GeneroMusical {
     BLUES("Blues", "Blues clásico y contemporáneo"),
     TRAP("Trap", "Trap y música urbana");
 
-    // Atributos
     private final String nombre;
     private final String description;
 
-    // Constructor
     GeneroMusical(String nombre, String description) {
         this.nombre = nombre;
         this.description = description;
     }
 
-    // Metodos
     public String getNombre() {
         return nombre;
     }

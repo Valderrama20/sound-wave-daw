@@ -9,6 +9,10 @@ import modelo.usuarios.Usuario;
 
 import java.util.*;
 
+/**
+ * Representa una lista de reproducción de contenido multimedia.
+ * Puede contener canciones y podcasts, y ser pública o privada.
+ */
 public class Playlist {
 
     // Constantes
@@ -26,7 +30,13 @@ public class Playlist {
     private Date fechaCreacion = new Date();
     private int maxContenidos = MAX_CONTENIDOS_DEFAULT;
 
-    // Constructor
+    /**
+     * Constructor completo de Playlist.
+     * @param nombre Nombre de la lista.
+     * @param creador Usuario propietario.
+     * @param esPublica Visibilidad de la lista.
+     * @param descripcion Descripción opcional.
+     */
     public Playlist(String nombre, Usuario creador, boolean esPublica, String descripcion) {
         this.nombre = nombre;
         this.creador = creador;
@@ -34,6 +44,11 @@ public class Playlist {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Constructor para una playlist privada básica.
+     * @param nombre Nombre de la lista.
+     * @param creador Usuario propietario.
+     */
     public Playlist(String nombre, Usuario creador) {
         this(nombre, creador, false, null);
     }
@@ -120,6 +135,12 @@ public class Playlist {
     }
 
     // Metodos
+    /**
+     * Añade un contenido a la playlist.
+     * @param contenidoNuevo Contenido a agregar.
+     * @throws PlaylistLlenaException Si se ha alcanzado el límite máximo de contenidos.
+     * @throws ContenidoDuplicadoException Si el contenido ya existe en la lista.
+     */
     public void agregarContenido(Contenido contenidoNuevo) throws PlaylistLlenaException, ContenidoDuplicadoException {
         if(contenidos.size() >= maxContenidos) throw new PlaylistLlenaException();
 
@@ -130,6 +151,11 @@ public class Playlist {
         addContenido(contenidoNuevo);
     }
 
+    /**
+     * Elimina un contenido de la playlist por su ID.
+     * @param idContenido ID del contenido a eliminar.
+     * @return true si se eliminó correctamente, false si no se encontró.
+     */
     public boolean eliminarContenido(String idContenido) {
         for (Contenido contenido : contenidos) {
             if(contenido.getId().equals(idContenido)) {
@@ -141,6 +167,11 @@ public class Playlist {
         return false;
     }
 
+    /**
+     * Elimina un objeto contenido de la playlist.
+     * @param contenidoEliminar Objeto contenido.
+     * @return true si se eliminó.
+     */
     public boolean eliminarContenido(Contenido contenidoEliminar) {
         for (Contenido contenido : contenidos) {
             if(contenido.getId().equals(contenidoEliminar.getId())) {
@@ -152,6 +183,11 @@ public class Playlist {
         return false;
     }
 
+    /**
+     * Ordena los contenidos de la playlist según un criterio específico.
+     * @param criterio Criterio de ordenación (Popularidad, Duración, etc.).
+     * @throws PlaylistVaciaException Si la playlist no tiene elementos para ordenar.
+     */
     public void ordenarPor(CriterioOrden criterio) throws PlaylistVaciaException {
         if(estaVacia()) throw new PlaylistVaciaException();
 
@@ -166,6 +202,10 @@ public class Playlist {
         }
     }
 
+    /**
+     * Calcula la duración total de reproducción de la playlist en segundos.
+     * @return Duración total.
+     */
     public int getDuracionTotal() {
         int duracionTotalContenido = 0;
 
@@ -176,16 +216,28 @@ public class Playlist {
         return duracionTotalContenido;
     }
 
+    /**
+     * Obtiene la duración total en formato legible (h:m:s).
+     * @return String con duración formateada.
+     */
     public String getDuracionTotalFormateada() {
         int duracionTotal = getDuracionTotal();
 
         return duracionTotal / 3600 + ":" + duracionTotal / 60 + ":" + duracionTotal % 60;
     }
 
+    /**
+     * Mezcla aleatoriamente el orden de los contenidos.
+     */
     public void shuffle() {
         Collections.shuffle(contenidos);
     }
 
+    /**
+     * Busca contenidos dentro de la playlist cuyo título contenga el término dado.
+     * @param termino Texto a buscar.
+     * @return Lista de contenidos coincidentes.
+     */
     public ArrayList<Contenido> buscarContenido(String termino) {
         return (ArrayList<Contenido>) contenidos.stream().filter(contenido -> contenido.getTitulo().contains(termino)).toList();
     }

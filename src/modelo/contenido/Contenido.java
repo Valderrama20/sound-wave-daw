@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Clase abstracta que define los atributos y comportamientos comunes de todo el contenido multimedia.
+ */
 public abstract class Contenido {
 
     // Atributos
@@ -20,7 +23,12 @@ public abstract class Contenido {
     protected boolean disponible;               // Indica si el contenido está disponible.
     protected Date fechaPublicacion;            // Fecha de publicación
 
-    // Constructor
+    /**
+     * Constructor base para inicializar un contenido.
+     * @param titulo Título del contenido.
+     * @param duracionSegundos Duración en segundos.
+     * @throws DuracionInvalidaException Si la duración es menor o igual a cero.
+     */
     public Contenido(String titulo, int duracionSegundos) throws DuracionInvalidaException {
 
         // validaciones
@@ -84,26 +92,46 @@ public abstract class Contenido {
     }
 
     // Metodos
+    /**
+     * Método abstracto para iniciar la reproducción del contenido.
+     * @throws ContenidoNoDisponibleException Si el contenido no está disponible para reproducción.
+     */
     public abstract void reproducir() throws ContenidoNoDisponibleException;
 
+    /**
+     * Incrementa el contador de reproducciones en uno.
+     */
     public void aumentarReproducciones() {
         reproducciones++;
     }
 
-
+    /**
+     * Incrementa el contador de "me gusta".
+     */
     public void agregarLike() {
         likes++;
     }
 
-
+    /**
+     * Verifica si el contenido es considerado popular.
+     * @return true si tiene más de 100,000 reproducciones.
+     */
     public boolean esPopular() {
         return reproducciones > 100000;
     }
 
+    /**
+     * Valida si la duración del contenido es correcta.
+     * @throws DuracionInvalidaException Si la duración es inválida.
+     */
     public void validarDuracion() throws DuracionInvalidaException {
         if (duracionSegundos <= 0) throw new DuracionInvalidaException();
     }
 
+    /**
+     * Asocia una nueva etiqueta si no existe previamente.
+     * @param tag Etiqueta a añadir.
+     */
     public void agregarTag(String tag) {
         if (!this.tieneTag(tag)) {
             this.tags.add(tag);

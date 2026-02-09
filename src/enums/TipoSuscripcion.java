@@ -1,18 +1,20 @@
 package enums;
 
+/**
+ * Enum que define los tipos de suscripción disponibles para los usuarios,
+ * especificando precio, privilegios y límites.
+ */
 public enum TipoSuscripcion {
     GRATUITO(0.0, false, 50, false),
     PREMIUM(9.99, true, -1, true),
     FAMILIAR(14.99, true, -1, true),
     ESTUDIANTE(4.99, true, -1, true);
 
-    // Atributos
     private final double precioMensual;
     private final boolean sinAnuncios;
     private final int limiteReproducciones;
     private final boolean descargasOffline;
 
-    // Constructor
     TipoSuscripcion(double precioMensual, boolean sinAnuncios, int limiteReproducciones, boolean descargasOffline) {
         this.precioMensual = precioMensual;
         this.sinAnuncios = sinAnuncios;
@@ -20,7 +22,6 @@ public enum TipoSuscripcion {
         this.descargasOffline = descargasOffline;
     }
 
-    // Metodos
     public double getPrecioMensual() {
         return precioMensual;
     }

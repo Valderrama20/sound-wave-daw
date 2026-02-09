@@ -29,15 +29,15 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
     private boolean descargado = false;
 
     /**
-     * Constructor principal de la clase Podcast.
-     *
-     * @param titulo Título del episodio
-     * @param duracionSegundos Duración en segundos
-     * @param creador Creador del podcast
-     * @param numeroEpisodio Número del episodio
-     * @param temporada Temporada
-     * @param categoria Categoría
-     * @param description Descripcion
+     * Crea un nuevo episodio de podcast.
+     * @param titulo Título del episodio.
+     * @param duracionSegundos Duración en segundos.
+     * @param creador Creador del podcast.
+     * @param numeroEpisodio Número secuencial del episodio.
+     * @param temporada Temporada del podcast.
+     * @param categoria Categoría temática.
+     * @param description Breve descripción del contenido.
+     * @throws DuracionInvalidaException Si la duración es inválida.
      */
     public Podcast(String titulo, int duracionSegundos, Creador creador, int numeroEpisodio, int temporada, CategoriaPodcast categoria, String description) throws DuracionInvalidaException {
         super(titulo, duracionSegundos);
@@ -50,7 +50,14 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
     }
 
     /**
-     * Constructor para crear un podcast sin creador asignado.
+     * Crea un podcast con información básica (sin descripción).
+     * @param titulo Título.
+     * @param duracionSegundos Duración.
+     * @param creador Creador.
+     * @param numeroEpisodio Número de episodio.
+     * @param temporada Temporada.
+     * @param categoria Categoría.
+     * @throws DuracionInvalidaException Si la duración es inválida.
      */
     public Podcast(String titulo, int duracionSegundos, Creador creador, int numeroEpisodio, int temporada, CategoriaPodcast categoria) throws DuracionInvalidaException {
         this(titulo, duracionSegundos, creador, numeroEpisodio, temporada, categoria, null);
@@ -102,6 +109,10 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
         return new ArrayList<>(invitados);
     }
 
+    /**
+     * Añade un invitado a la lista si no está ya incluido.
+     * @param invitado Nombre del invitado.
+     */
     public void addInvitados(String invitado) {
         // Verificar que no exista el invitado
         for (String invitadoListado: invitados){
@@ -138,6 +149,10 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
     }
 
     // Metodos
+    /**
+     * Comienza la reproducción del episodio.
+     * @throws ContenidoNoDisponibleException Si el episodio no está disponible.
+     */
     @Override
     public void reproducir() throws ContenidoNoDisponibleException {
         if(!disponible) throw new ContenidoNoDisponibleException();
@@ -147,6 +162,9 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
 
     }
 
+    /**
+     * Reanuda la reproducción.
+     */
     @Override
     public void play() {
         reproduciendo = true;
@@ -164,11 +182,21 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
         pausado = false;
     }
 
+    /**
+     * Devuelve la duración del episodio.
+     * @return Duración en segundos.
+     */
     @Override
     public int getDuracion() {
         return getDuracionSegundos();
     }
 
+    /**
+     * Descarga el episodio para escucha offline.
+     * @return true si la operación fue exitosa.
+     * @throws LimiteDescargasException Si se excedió el límite de descargas.
+     * @throws ContenidoYaDescargadoException Si ya fue descargado previamente.
+     */
     @Override
     public boolean descargar() throws LimiteDescargasException, ContenidoYaDescargadoException {
         if (descargado) throw new ContenidoYaDescargadoException();
@@ -183,39 +211,48 @@ public class Podcast extends Contenido implements Reproducible, Descargable {
 
     @Override
     public int espacioRequerido() {
-        // TODO
         return 0;
     }
 
     /**
-     * Devuelve la descripción del episodio.
+     * Obtiene la descripción del episodio.
+     * @return Texto de descripción.
      */
     public String obtenerDescripcion() {
         return descripcion;
     }
 
     /**
-     * Agrega un invitado al podcast.
-     *
-     * @param nombre Nombre del invitado
+     * Registra un nuevo invitado al episodio.
+     * @param nombre Nombre del invitado.
      */
     public void agregarInvitado(String nombre) {
         this.addInvitados(nombre);
     }
 
     /**
-     * Indica si el episodio pertenece a una temporada nueva.
+     * Verifica si es una temporada reciente (mayor o igual a 1).
+     * @return true si es temporada nueva.
      */
     public boolean esTemporadaNueva() {
         return temporada >= 1;
     }
 
+    /**
+     * Obtiene la transcripción del audio del episodio.
+     * @return Texto de la transcripción.
+     * @throws TranscripcionNoDisponibleException Si no existe transcripción.
+     */
     public String obtenerTranscripcion() throws TranscripcionNoDisponibleException {
         if(transcripcion == null) throw new TranscripcionNoDisponibleException();
 
         return transcripcion;
     }
 
+    /**
+     * Valida la existencia y consistencia del episodio.
+     * @throws EpisodioNoEncontradoException Si el episodio no es válido.
+     */
     public void validarEpisodio() throws EpisodioNoEncontradoException {
         // TODO
     }
